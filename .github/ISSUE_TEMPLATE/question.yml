@@ -1,0 +1,13 @@
+name: ❓️ Question Request
+description: Request an answer
+title: "[Question]: "
+labels: ["Type: Question", "Status: Triage"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Question
+      description: A clear and concise description of your question.
+      placeholder: Tell us what you want to know!
+    validations:
+      required: true
