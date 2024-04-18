@@ -13,6 +13,8 @@ import at.jku.dke.task_app.sql.dto.SchemaInfoDto;
 import at.jku.dke.task_app.sql.dto.TableDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.ValidationException;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -43,7 +45,8 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
      * @param objectMapper             The JSON object mapper.
      * @param queryRepository          The task group query repository.
      */
-    public SqlRaTaskGroupService(SqlRaTaskGroupRepository repository, SqlRaTaskGroupQueryRepository queryRepository, MessageSource messageSource, ObjectMapper objectMapper, JdbcConnectionParameters jdbcConnectionParameters) {
+    public SqlRaTaskGroupService(SqlRaTaskGroupRepository repository, SqlRaTaskGroupQueryRepository queryRepository,
+                                 MessageSource messageSource, ObjectMapper objectMapper, JdbcConnectionParameters jdbcConnectionParameters) {
         super(repository);
         this.messageSource = messageSource;
         this.objectMapper = objectMapper;
@@ -171,12 +174,77 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
 
     //#endregion
 
+    //#region --- DESCRIPTION ---
+
+    private String generateSchemaDescription(SqlRaTaskGroup taskGroup) {
+        if (taskGroup.getSchemaDescription() == null)
+            return "";
+
+        // Parse schema info
+        SchemaInfoDto dto;
+        try {
+            dto = this.objectMapper.readValue(taskGroup.getSchemaDescription(), SchemaInfoDto.class);
+        } catch (JsonProcessingException ex) {
+            return "";
+        }
+
+        // Build
+        StringBuilder sb = new StringBuilder("<div style=\"font-family: monospace;\">");
+        TriConsumer<StringBuilder, TableDto, String> colFunc = (s, table, col) -> {
+            boolean isFk = table.foreignKeys().stream().anyMatch(f -> f.columns().contains(col));
+            if (isFk)
+                s.append("<i>");
+            s.append(col);
+            if (isFk)
+                s.append("</i>");
+            s.append(", ");
+        };
+
+        // Tables
+        for (var table : dto.tables()) {
+            sb.append("<a target=\"_blank\" href=\"");
+            sb.append("https://etutor.dke.uni-linz.ac.at/api/forwardPublic/sql/query/").append(table.queryId()).append("\">").append(table.name()).append("</a> (");
+            // TODO: make link configurable
+
+            // PK columns
+            sb.append("<u>");
+            table.columns().stream().filter(TableDto.ColumnDto::primaryKey).forEach(x -> colFunc.accept(sb, table, x.name()));
+            sb.deleteCharAt(sb.length() - 1);
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append("</u>");
+            if (table.columns().stream().anyMatch(x -> !x.primaryKey()))
+                sb.append(", ");
+
+            // Other columns
+            table.columns().stream().filter(x -> !x.primaryKey()).forEach(x -> colFunc.accept(sb, table, x.name()));
+
+            // Remove last comma
+            sb.deleteCharAt(sb.length() - 1);
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append(")<br>");
+        }
+        sb.append("<br>");
+
+        // Inclusions
+        for (var table : dto.tables()) {
+            for (var fk : table.foreignKeys()) {
+                sb.append(fk.table()).append('(').append(String.join(", ", fk.columns())).append(") ⊆ ");
+                sb.append(fk.referencedTable()).append('(').append(String.join(", ", fk.referencedColumns())).append(") <br>");
+            }
+        }
+
+        sb.append("</div>");
+        return sb.toString();
+    }
+
+    //#endregion
+
     @Override
     protected TaskGroupModificationResponseDto mapToReturnData(SqlRaTaskGroup taskGroup, boolean create) {
-        // TODO
+        var text = this.generateSchemaDescription(taskGroup);
         return new TaskGroupModificationResponseDto(
-            this.messageSource.getMessage("defaultTaskGroupDescription", new Object[]{}, Locale.GERMAN),
-            this.messageSource.getMessage("defaultTaskGroupDescription", new Object[]{}, Locale.ENGLISH));
+            this.messageSource.getMessage("defaultTaskGroupDescription", new Object[]{text}, Locale.GERMAN),
+            this.messageSource.getMessage("defaultTaskGroupDescription", new Object[]{text}, Locale.ENGLISH));
     }
 
     /**
@@ -196,6 +264,14 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
      * @throws jakarta.validation.ValidationException If the statements are invalid.
      */
     private void validateStatements(ModifyTaskGroupDto<ModifySqlTaskGroupDto> modifyTaskGroupDto) {
-        // TODO (siehe auch etutorpp??)
+        // DIAGNOSE
+        var tmp = modifyTaskGroupDto.additionalData().diagnoseDmlStatements().toLowerCase();
+        if (tmp.contains("create table") || tmp.contains("alter table"))
+            throw new ValidationException("Diagnose DML Statements must not contain CREATE or ALTER-table statements.");
+
+        // SUBMIT
+        tmp = modifyTaskGroupDto.additionalData().submitDmlStatements().toLowerCase();
+        if (tmp.contains("create table") || tmp.contains("alter table"))
+            throw new ValidationException("Submission DML Statements must not contain CREATE or ALTER-table statements.");
     }
 }

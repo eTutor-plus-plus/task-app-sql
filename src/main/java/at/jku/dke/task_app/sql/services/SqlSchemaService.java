@@ -119,11 +119,23 @@ public class SqlSchemaService implements AutoCloseable {
             List<TableDto.ForeignKeyDto> foreignKeys = new ArrayList<>();
             var rsFk = this.connection.getMetaData().getImportedKeys(null, schema, tableName);
             while (rsFk.next()) {
-                String fkName = rsFk.getString("FKTABLE_NAME");
+                String fkName = rsFk.getString("FK_NAME");
+                String fkTableName = rsFk.getString("FKTABLE_NAME");
                 String fkColumnName = rsFk.getString("FKCOLUMN_NAME");
                 String pkTableName = rsFk.getString("PKTABLE_NAME");
                 String pkColumnName = rsFk.getString("PKCOLUMN_NAME");
-                foreignKeys.add(new TableDto.ForeignKeyDto(fkName, fkColumnName, pkTableName, pkColumnName));
+
+                var existing = foreignKeys.stream().filter(x -> x.name().equals(fkName)).findFirst();
+                if (existing.isEmpty())
+                    foreignKeys.add(new TableDto.ForeignKeyDto(fkName, fkTableName, new ArrayList<>() {{
+                        add(fkColumnName);
+                    }}, pkTableName, new ArrayList<>() {{
+                        add(pkColumnName);
+                    }}));
+                else {
+                    existing.get().columns().add(fkColumnName);
+                    existing.get().referencedColumns().add(pkColumnName);
+                }
             }
 
             tables.add(new TableDto(tableName, columns, foreignKeys, null));

@@ -16,12 +16,13 @@ public record TableDto(String name, List<ColumnDto> columns, List<ForeignKeyDto>
     /**
      * Creates a new instance of class {@link ForeignKeyDto}.
      *
-     * @param table            The table name.
-     * @param column           The column name.
-     * @param referencedTable  The referenced table name.
-     * @param referencedColumn The referenced column name.
+     * @param name              The name of the foreign key.
+     * @param table             The table name.
+     * @param columns           The column names.
+     * @param referencedTable   The referenced table name.
+     * @param referencedColumns The referenced column names.
      */
-    public record ForeignKeyDto(String table, String column, String referencedTable, String referencedColumn) implements Serializable {
+    public record ForeignKeyDto(String name, String table, List<String> columns, String referencedTable, List<String> referencedColumns) implements Serializable {
     }
 
     /**

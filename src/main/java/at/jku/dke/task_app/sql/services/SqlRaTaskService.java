@@ -14,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Locale;
-
 /**
  * This class provides methods for managing {@link SqlRaTask}s of type SQL.
  */
@@ -79,9 +77,6 @@ public class SqlRaTaskService extends BaseTaskInGroupService<SqlRaTask, SqlRaTas
 
     @Override
     protected TaskModificationResponseDto mapToReturnData(SqlRaTask task, boolean create) {
-        return new TaskModificationResponseDto(
-            this.messageSource.getMessage("defaultTaskDescription", null, Locale.GERMAN),
-            this.messageSource.getMessage("defaultTaskDescription", null, Locale.ENGLISH)
-        );
+        return new TaskModificationResponseDto(null, null);
     }
 }
