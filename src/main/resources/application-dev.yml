@@ -7,8 +7,8 @@ logging:
 # Data
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5434/etutor_binary_search
-    username: etutor_binary_search
+    url: jdbc:postgresql://localhost:5434/etutor_sql
+    username: etutor_sql
     password: secret
   jpa:
     show-sql: true
@@ -33,3 +33,13 @@ clients:
       key: plag-check-key
       roles:
         - READ_SUBMISSION
+
+# JDBC
+jdbc:
+  url: jdbc:postgresql://localhost:5434/etutor_sql_exercises
+  admin:
+    username: etutor_sql
+    password: secret
+  executor:
+    username: etutor_sql_executor
+    password: etutor_sql_executor_pwd

@@ -23,11 +23,11 @@ spring:
 ## Database
 #spring:
 #  datasource:
-#    url: jdbc:postgresql://localhost:5434/etutor_binary_search
+#    url: jdbc:postgresql://localhost:5434/etutor_sql
 #    username: etutor
 #    password: TBD
 #  flyway:
-#    user: etutor_binary_search_admin
+#    user: etutor_sql_admin
 #    password: TBD
 #
 ## API key definition
@@ -46,3 +46,12 @@ spring:
 #      key: TBD
 #      roles:
 #       - READ_SUBMISSION
+## JDBC
+#jdbc:
+#  url: jdbc:postgresql://localhost:5434/etutor_sql_exercises
+#  admin:
+#    username: etutor_sql_schema_manager
+#    password: TBD
+#  executor:
+#    username: etutor_sql_executor
+#    password: TBD

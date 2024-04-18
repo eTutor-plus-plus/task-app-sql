@@ -1,5 +1,8 @@
 blank_issues_enabled: true
 contact_links:
   - name: Contribution Details
-    url: https://github.com/eTutor-plus-plus/task-app-binary-search/blob/main/CONTRIBUTING.md
+    url: https://github.com/eTutor-plus-plus/task-app-sql/blob/main/CONTRIBUTING.md
     about: Before opening a new issue, please make sure to read CONTRIBUTING.md
+  - name: Documentation
+    url: https://github.com/eTutor-plus-plus/task-app-sql/wiki
+    about: Before opening a new issue, please make sure to read the documentation.

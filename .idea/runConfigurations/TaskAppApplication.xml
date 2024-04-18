@@ -3,7 +3,7 @@
     <option name="ACTIVE_PROFILES" value="dev" />
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <module name="task-app-binary-search" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="at.jku.dke.task_app.binary_search.TaskAppApplication" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="at.jku.dke.task_app.sql.TaskAppApplication" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

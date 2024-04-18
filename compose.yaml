@@ -2,10 +2,12 @@ version: '3'
 
 services:
   postgres:
-    image: postgres:16
+    build:
+      context: ./docker
+      dockerfile: Dockerfile-pg
     environment:
-      - 'POSTGRES_DB=etutor_binary_search'
+      - 'POSTGRES_DB=etutor_sql'
       - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=etutor_binary_search'
+      - 'POSTGRES_USER=etutor_sql'
     ports:
       - '5434:5432'
