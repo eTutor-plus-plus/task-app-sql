@@ -37,4 +37,9 @@ public abstract class UnaryOperatorImpl extends ExpressionImpl implements UnaryO
             this.expression.getSchemaAttributes().forEach(this::addSchemaAttribute);
         }
     }
+
+    @Override
+    public String toString() {
+        return this.expression.toString();
+    }
 }

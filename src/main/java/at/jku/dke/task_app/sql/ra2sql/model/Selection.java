@@ -36,6 +36,11 @@ public class Selection extends UnaryOperatorImpl {
      * @return The comparisons.
      */
     public List<Comparison> getComparisons() {
-        return Collections.unmodifiableList(comparisons);
+        return Collections.unmodifiableList(this.comparisons);
+    }
+
+    @Override
+    public String toString() {
+        return "SELECTION[" + String.join(",", this.comparisons.stream().map(Comparison::toString).toString()) + "](" + this.getExpression() + ")";
     }
 }

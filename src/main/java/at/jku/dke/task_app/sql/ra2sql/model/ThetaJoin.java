@@ -68,4 +68,9 @@ public class ThetaJoin extends BinaryOperatorImpl {
             right.getSchemaAttributes().forEach(a -> this.addSchemaAttribute(RHS + "." + a));
         }
     }
+
+    @Override
+    public String toString() {
+        return "(" + this.getLeftExpression() + " {" + String.join(",", this.comparisons.stream().map(Comparison::toString).toString()) + "} " + this.getRightExpression() + ')';
+    }
 }

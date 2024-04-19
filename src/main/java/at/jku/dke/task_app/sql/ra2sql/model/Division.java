@@ -27,4 +27,9 @@ public class Division extends BinaryOperatorImpl {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return '(' + this.getLeftExpression().toString() + " DIVISION " + this.getRightExpression().toString() + ')';
+    }
 }

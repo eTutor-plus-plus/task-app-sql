@@ -31,7 +31,9 @@ public class Relation extends ExpressionImpl {
      * @param name The name.
      */
     public void setName(String name) {
-        this.name = name;
+        if (name == null)
+            return;
+        this.name = name.toUpperCase().trim();
     }
 
     @Override
@@ -43,5 +45,10 @@ public class Relation extends ExpressionImpl {
             throw new IllegalArgumentException("Relation " + this.name + " does not exist!");
 
         table.get().columns().forEach(x -> this.addSchemaAttribute(x.name()));
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 }

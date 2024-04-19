@@ -23,15 +23,14 @@ public class Renaming extends UnaryOperatorImpl {
      *
      * @param attribute The attribute name.
      * @param alias     The alias of the attribute.
-     * @return {@code true} if the alias was added; {@code false} otherwise.
      */
-    public boolean addAttributeAlias(String attribute, String alias) {
-        if (attribute != null && alias != null) {
-            attribute = attribute.toUpperCase().trim();
-            alias = alias.toUpperCase().trim();
-            return this.attributeAliases.put(attribute, alias) != null;
-        }
-        return false;
+    public void addAttributeAlias(String attribute, String alias) {
+        if (attribute == null || alias == null)
+            return;
+
+        attribute = attribute.toUpperCase().trim();
+        alias = alias.toUpperCase().trim();
+        this.attributeAliases.put(attribute, alias);
     }
 
     @Override
@@ -63,5 +62,22 @@ public class Renaming extends UnaryOperatorImpl {
     public String getAttributeForAlias(String name) {
         var result = this.attributeAliases.entrySet().stream().filter(x -> x.getValue().equalsIgnoreCase(name)).findFirst();
         return result.map(Map.Entry::getKey).orElse(null);
+    }
+
+    /**
+     * Returns the alias for the specified attribute.
+     *
+     * @param name The attribute name.
+     * @return The alias, if found.
+     */
+    public String getAliasForAttribute(String name) {
+        if (name == null)
+            return null;
+        return this.attributeAliases.get(name.toUpperCase());
+    }
+
+    @Override
+    public String toString() {
+        return "RENAMING[" + String.join(",", this.attributeAliases.entrySet().stream().map(k -> k.getKey() + " <- " + k.getValue()).toList()) + "}(" + this.getExpression() + ")";
     }
 }

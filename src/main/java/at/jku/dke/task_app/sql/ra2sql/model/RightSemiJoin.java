@@ -27,4 +27,9 @@ public class RightSemiJoin extends BinaryOperatorImpl {
             right.getSchemaAttributes().forEach(this::addSchemaAttribute);
         }
     }
+
+    @Override
+    public String toString() {
+        return '(' + this.getLeftExpression().toString() + " RIGHTSEMI " + this.getRightExpression().toString() + ')';
+    }
 }

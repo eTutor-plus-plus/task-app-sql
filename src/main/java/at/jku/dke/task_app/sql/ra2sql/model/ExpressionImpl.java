@@ -58,4 +58,8 @@ public abstract class ExpressionImpl implements Expression {
         return schemaAttributes.contains(attribute.toUpperCase().trim());
     }
 
+    @Override
+    public String toString() {
+        return String.join(",", this.schemaAttributes);
+    }
 }

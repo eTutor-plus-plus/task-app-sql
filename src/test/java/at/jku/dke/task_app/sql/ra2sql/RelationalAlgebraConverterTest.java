@@ -23,9 +23,9 @@ class RelationalAlgebraConverterTest {
                 new TableDto.ColumnDto("dept_name", "", false, false)
             ), List.of(), null)
         ));
-//        var result = RelationalAlgebraConverter.convertToSql(schema, "PROJECTION[emp_no, emp_name](emp)");
+        var result = RelationalAlgebraConverter.convertToSql(schema, "PROJECTION[emp_no, emp_name](emp)");
 //        var result = RelationalAlgebraConverter.convertToSql(schema, "emp");
-        var result = RelationalAlgebraConverter.convertToSql(schema, "(emp JOIN dept)");
+//        var result = RelationalAlgebraConverter.convertToSql(schema, "(emp JOIN dept)");
         System.out.println(result);
         assertNotNull(result);
     }

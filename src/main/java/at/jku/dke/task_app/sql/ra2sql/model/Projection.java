@@ -3,6 +3,7 @@ package at.jku.dke.task_app.sql.ra2sql.model;
 import at.jku.dke.task_app.sql.dto.SchemaInfoDto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,6 +33,15 @@ public class Projection extends UnaryOperatorImpl {
         return false;
     }
 
+    /**
+     * Gets the projection attributes.
+     *
+     * @return The projection attributes.
+     */
+    public List<String> getProjectionAttributes() {
+        return Collections.unmodifiableList(projectionAttributes);
+    }
+
     @Override
     public void calculateSchema(SchemaInfoDto schemaInfo) {
         this.removeAllSchemaAttributes();
@@ -40,5 +50,10 @@ public class Projection extends UnaryOperatorImpl {
             this.getExpression().calculateSchema(schemaInfo);
 
         this.projectionAttributes.forEach(this::addSchemaAttribute);
+    }
+
+    @Override
+    public String toString() {
+        return "PROJECTION[" + String.join(",", this.projectionAttributes) + "}(" + this.getExpression() + ")";
     }
 }

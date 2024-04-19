@@ -55,4 +55,9 @@ public abstract class BinaryOperatorImpl extends ExpressionImpl implements Binar
             this.right.getSchemaAttributes().forEach(this::addSchemaAttribute);
         }
     }
+
+    @Override
+    public String toString() {
+        return '(' + left.toString() + " " + right.toString() + ')';
+    }
 }

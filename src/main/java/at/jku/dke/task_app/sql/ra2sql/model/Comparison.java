@@ -132,4 +132,9 @@ public class Comparison {
         this.rightValueType = rightValueType;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return this.leftValue + ' ' + this.operator + ' ' + this.rightValue;
+    }
 }

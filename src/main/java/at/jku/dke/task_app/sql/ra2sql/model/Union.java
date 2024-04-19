@@ -27,4 +27,9 @@ public class Union extends BinaryOperatorImpl {
             left.getSchemaAttributes().forEach(this::addSchemaAttribute);
         }
     }
+
+    @Override
+    public String toString() {
+        return '(' + this.getLeftExpression().toString() + " UNION " + this.getRightExpression().toString() + ')';
+    }
 }

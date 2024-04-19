@@ -1,40 +1,38 @@
 package at.jku.dke.task_app.sql.ra2sql.model;
 
-import java.util.Objects;
-
 /**
  * Represents a comparison operator.
  */
-public class ComparisonOperator {
+public enum ComparisonOperator {
     /**
      * Comparison: equal
      */
-    public static final ComparisonOperator EQUAL = new ComparisonOperator("EQUAL");
+    EQUAL("EQUAL"),
 
     /**
      * Comparison: not equal
      */
-    public static final ComparisonOperator NOT_EQUAL = new ComparisonOperator("NOT_EQUAL");
+    NOT_EQUAL("NOT_EQUAL"),
 
     /**
      * Comparison: less than
      */
-    public static final ComparisonOperator LESS_THAN = new ComparisonOperator("LESS_THAN");
+    LESS_THAN("LESS_THAN"),
 
     /**
      * Comparison: greater than
      */
-    public static final ComparisonOperator GREATER_THAN = new ComparisonOperator("GREATER_THAN");
+    GREATER_THAN("GREATER_THAN"),
 
     /**
      * Comparison: less than or equal
      */
-    public static final ComparisonOperator LESS_OR_EQUAL = new ComparisonOperator("LT_OR_EQUAL");
+    LESS_OR_EQUAL("LT_OR_EQUAL"),
 
     /**
      * Comparison: greater than or equal
      */
-    public static final ComparisonOperator GREATER_OR_EQUAL = new ComparisonOperator("GT_OR_EQUAL");
+    GREATER_OR_EQUAL("GT_OR_EQUAL");
 
     private final String name;
 
@@ -43,7 +41,7 @@ public class ComparisonOperator {
      *
      * @param name The name of the operator.
      */
-    protected ComparisonOperator(String name) {
+    ComparisonOperator(String name) {
         this.name = name;
     }
 
@@ -54,19 +52,6 @@ public class ComparisonOperator {
      */
     public String getName() {
         return name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ComparisonOperator that = (ComparisonOperator) o;
-        return Objects.equals(name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(name);
     }
 
     @Override

@@ -9,4 +9,9 @@ public class OuterJoin extends BinaryOperatorImpl {
      */
     public OuterJoin() {
     }
+
+    @Override
+    public String toString() {
+        return '(' + this.getLeftExpression().toString() + " OUTER_JOIN " + this.getRightExpression().toString() + ')';
+    }
 }

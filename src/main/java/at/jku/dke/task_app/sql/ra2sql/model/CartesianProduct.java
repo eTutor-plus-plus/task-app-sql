@@ -9,4 +9,9 @@ public class CartesianProduct extends BinaryOperatorImpl {
      */
     public CartesianProduct() {
     }
+
+    @Override
+    public String toString() {
+        return '(' + this.getLeftExpression().toString() + " CARTESIANPRODUCT " + this.getRightExpression().toString() + ')';
+    }
 }

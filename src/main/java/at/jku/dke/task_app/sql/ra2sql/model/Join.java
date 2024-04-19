@@ -9,4 +9,9 @@ public class Join extends BinaryOperatorImpl {
      */
     public Join() {
     }
+
+    @Override
+    public String toString() {
+        return '(' + this.getLeftExpression().toString() + " JOIN " + this.getRightExpression().toString() + ')';
+    }
 }
