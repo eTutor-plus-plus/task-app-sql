@@ -1,6 +1,7 @@
 package at.jku.dke.task_app.sql.ra2sql.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,5 +28,14 @@ public class Selection extends UnaryOperatorImpl {
             return this.comparisons.add(comparison);
         }
         return false;
+    }
+
+    /**
+     * Returns the comparisons of the selection.
+     *
+     * @return The comparisons.
+     */
+    public List<Comparison> getComparisons() {
+        return Collections.unmodifiableList(comparisons);
     }
 }

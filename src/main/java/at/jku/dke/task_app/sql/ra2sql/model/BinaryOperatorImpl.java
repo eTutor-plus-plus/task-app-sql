@@ -1,9 +1,11 @@
 package at.jku.dke.task_app.sql.ra2sql.model;
 
+import at.jku.dke.task_app.sql.dto.SchemaInfoDto;
+
 /**
  * Default implementation of {@link BinaryOperator}.
  */
-public class BinaryOperatorImpl extends ExpressionImpl implements BinaryOperator {
+public abstract class BinaryOperatorImpl extends ExpressionImpl implements BinaryOperator {
 
     private Expression left;
     private Expression right;
@@ -38,5 +40,19 @@ public class BinaryOperatorImpl extends ExpressionImpl implements BinaryOperator
             return false;
         this.right = expression;
         return true;
+    }
+
+    @Override
+    public void calculateSchema(SchemaInfoDto schemaInfo) {
+        this.removeAllSchemaAttributes();
+
+        if (this.left != null) {
+            this.left.calculateSchema(schemaInfo);
+            this.left.getSchemaAttributes().forEach(this::addSchemaAttribute);
+        }
+        if (this.right != null) {
+            this.right.calculateSchema(schemaInfo);
+            this.right.getSchemaAttributes().forEach(this::addSchemaAttribute);
+        }
     }
 }

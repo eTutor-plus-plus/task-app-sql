@@ -1,9 +1,11 @@
 package at.jku.dke.task_app.sql.ra2sql.model;
 
+import at.jku.dke.task_app.sql.dto.SchemaInfoDto;
+
 /**
  * Default implementation of {@link UnaryOperator}.
  */
-public class UnaryOperatorImpl extends ExpressionImpl implements UnaryOperator {
+public abstract class UnaryOperatorImpl extends ExpressionImpl implements UnaryOperator {
 
     private Expression expression;
 
@@ -24,5 +26,15 @@ public class UnaryOperatorImpl extends ExpressionImpl implements UnaryOperator {
             return false;
         this.expression = expression;
         return true;
+    }
+
+    @Override
+    public void calculateSchema(SchemaInfoDto schemaInfo) {
+        this.removeAllSchemaAttributes();
+
+        if (this.expression != null) {
+            this.expression.calculateSchema(schemaInfo);
+            this.expression.getSchemaAttributes().forEach(this::addSchemaAttribute);
+        }
     }
 }

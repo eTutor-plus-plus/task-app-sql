@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Default implementation of the {@link Expression} interface.
  */
-public class ExpressionImpl implements Expression {
+public abstract class ExpressionImpl implements Expression {
     private final List<String> schemaAttributes;
 
     /**
@@ -57,4 +57,5 @@ public class ExpressionImpl implements Expression {
     public boolean containsSchemaAttribute(String attribute) {
         return schemaAttributes.contains(attribute.toUpperCase().trim());
     }
+
 }

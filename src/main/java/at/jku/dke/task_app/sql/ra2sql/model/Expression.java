@@ -1,5 +1,7 @@
 package at.jku.dke.task_app.sql.ra2sql.model;
 
+import at.jku.dke.task_app.sql.dto.SchemaInfoDto;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -50,4 +52,11 @@ public interface Expression {
      * @return {@code true} if this list contains the specified element; {@code false} otherwise.
      */
     boolean containsSchemaAttribute(String attribute);
+
+    /**
+     * Determines the schema attributes used in the expression.
+     *
+     * @param schemaInfo The database schema information.
+     */
+    void calculateSchema(SchemaInfoDto schemaInfo);
 }

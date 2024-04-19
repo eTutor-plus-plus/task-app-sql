@@ -1,5 +1,7 @@
 package at.jku.dke.task_app.sql.ra2sql.model;
 
+import at.jku.dke.task_app.sql.dto.SchemaInfoDto;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,5 +30,15 @@ public class Projection extends UnaryOperatorImpl {
             return this.projectionAttributes.add(attribute);
         }
         return false;
+    }
+
+    @Override
+    public void calculateSchema(SchemaInfoDto schemaInfo) {
+        this.removeAllSchemaAttributes();
+
+        if (this.getExpression() != null)
+            this.getExpression().calculateSchema(schemaInfo);
+
+        this.projectionAttributes.forEach(this::addSchemaAttribute);
     }
 }

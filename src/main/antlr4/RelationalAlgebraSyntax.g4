@@ -1,7 +1,7 @@
 grammar RelationalAlgebraSyntax;
 
 @header {
-    package at.jku.dke.task_app.sql.ra2sql;
+    package at.jku.dke.task_app.sql.ra2sql.parser;
 
     import java.util.GregorianCalendar;
     import at.jku.dke.task_app.sql.ra2sql.model.*;

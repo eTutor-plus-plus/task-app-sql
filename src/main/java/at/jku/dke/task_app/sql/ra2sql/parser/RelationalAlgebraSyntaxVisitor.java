@@ -1,6 +1,6 @@
 // Generated from /Users/martin/Development/dke/etutor_neu/task-app-sql/src/main/antlr4/RelationalAlgebraSyntax.g4 by ANTLR 4.13.1
 
-    package at.jku.dke.task_app.sql.ra2sql;
+    package at.jku.dke.task_app.sql.ra2sql.parser;
 
     import java.util.GregorianCalendar;
     import at.jku.dke.task_app.sql.ra2sql.model.*;
