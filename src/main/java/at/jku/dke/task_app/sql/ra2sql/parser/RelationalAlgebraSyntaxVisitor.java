@@ -130,17 +130,17 @@ public interface RelationalAlgebraSyntaxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitThetaJoin(RelationalAlgebraSyntaxParser.ThetaJoinContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link RelationalAlgebraSyntaxParser#literal}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLiteral(RelationalAlgebraSyntaxParser.LiteralContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link RelationalAlgebraSyntaxParser#comparisonOperator}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitComparisonOperator(RelationalAlgebraSyntaxParser.ComparisonOperatorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RelationalAlgebraSyntaxParser#literal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLiteral(RelationalAlgebraSyntaxParser.LiteralContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RelationalAlgebraSyntaxParser#date}.
 	 * @param ctx the parse tree

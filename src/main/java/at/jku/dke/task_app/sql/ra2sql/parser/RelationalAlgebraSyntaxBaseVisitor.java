@@ -156,14 +156,14 @@ public class RelationalAlgebraSyntaxBaseVisitor<T> extends AbstractParseTreeVisi
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLiteral(RelationalAlgebraSyntaxParser.LiteralContext ctx) { return visitChildren(ctx); }
+	@Override public T visitComparisonOperator(RelationalAlgebraSyntaxParser.ComparisonOperatorContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitComparisonOperator(RelationalAlgebraSyntaxParser.ComparisonOperatorContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLiteral(RelationalAlgebraSyntaxParser.LiteralContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

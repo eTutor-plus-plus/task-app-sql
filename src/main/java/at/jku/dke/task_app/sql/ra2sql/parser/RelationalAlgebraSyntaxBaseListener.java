@@ -250,18 +250,6 @@ public class RelationalAlgebraSyntaxBaseListener implements RelationalAlgebraSyn
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLiteral(RelationalAlgebraSyntaxParser.LiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLiteral(RelationalAlgebraSyntaxParser.LiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterComparisonOperator(RelationalAlgebraSyntaxParser.ComparisonOperatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -269,6 +257,18 @@ public class RelationalAlgebraSyntaxBaseListener implements RelationalAlgebraSyn
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitComparisonOperator(RelationalAlgebraSyntaxParser.ComparisonOperatorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLiteral(RelationalAlgebraSyntaxParser.LiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLiteral(RelationalAlgebraSyntaxParser.LiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

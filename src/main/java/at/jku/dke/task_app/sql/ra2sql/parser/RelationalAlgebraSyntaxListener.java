@@ -203,16 +203,6 @@ public interface RelationalAlgebraSyntaxListener extends ParseTreeListener {
 	 */
 	void exitThetaJoin(RelationalAlgebraSyntaxParser.ThetaJoinContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link RelationalAlgebraSyntaxParser#literal}.
-	 * @param ctx the parse tree
-	 */
-	void enterLiteral(RelationalAlgebraSyntaxParser.LiteralContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link RelationalAlgebraSyntaxParser#literal}.
-	 * @param ctx the parse tree
-	 */
-	void exitLiteral(RelationalAlgebraSyntaxParser.LiteralContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link RelationalAlgebraSyntaxParser#comparisonOperator}.
 	 * @param ctx the parse tree
 	 */
@@ -222,6 +212,16 @@ public interface RelationalAlgebraSyntaxListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitComparisonOperator(RelationalAlgebraSyntaxParser.ComparisonOperatorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RelationalAlgebraSyntaxParser#literal}.
+	 * @param ctx the parse tree
+	 */
+	void enterLiteral(RelationalAlgebraSyntaxParser.LiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RelationalAlgebraSyntaxParser#literal}.
+	 * @param ctx the parse tree
+	 */
+	void exitLiteral(RelationalAlgebraSyntaxParser.LiteralContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RelationalAlgebraSyntaxParser#date}.
 	 * @param ctx the parse tree

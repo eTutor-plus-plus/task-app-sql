@@ -157,7 +157,7 @@ class SqlBuilder {
                 .append("GROUP BY ").append(this.generateSelectColumns(expression)).newLine()
                 .append("HAVING COUNT(*) = (SELECT COUNT(*) FROM (").indent().newLine()
                 .append(right).outdent().newLine()
-                .append(") AS havingSubquery");
+                .append(") AS havingSubquery)");
         } else if (expression instanceof OuterJoin) {
             sb.append("SELECT ").append(this.generateSelectColumns(expression)).newLine()
                 .append("FROM (").indent().newLine()

@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.Recognizer;
 /**
  * Throws exceptions on syntax errors in the lexer.
  */
-class RelationalAlgebraSyntaxLexerErrorListener extends BaseErrorListener {
+public class RelationalAlgebraSyntaxLexerErrorListener extends BaseErrorListener {
 
     /**
      * Creates a new instance of class {@link RelationalAlgebraSyntaxLexerErrorListener}.

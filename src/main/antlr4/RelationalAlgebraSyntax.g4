@@ -25,9 +25,9 @@ operator returns [Expression value]
 // UNARY
 unary returns [Expression value]
     : (
-        sel=selection 'LEFTPARENTHESES' expr=expression 'RIGHTPARENTHESES' {$sel.value.setExpression($expr.value);} |
-        proj=projection 'LEFTPARENTHESES' expr=expression 'RIGHTPARENTHESES' {$proj.value.setExpression($expr.value);} |
-        ren=renaming 'LEFTPARENTHESES' expr=expression 'RIGHTPARENTHESES' {$ren.value.setExpression($expr.value);}
+        sel=selection 'LEFTPARENTHESES' expr1=expression 'RIGHTPARENTHESES' {$sel.value.setExpression($expr1.value); $value = $sel.value;} |
+        proj=projection 'LEFTPARENTHESES' expr2=expression 'RIGHTPARENTHESES' {$proj.value.setExpression($expr2.value); $value = $proj.value;} |
+        ren=renaming 'LEFTPARENTHESES' expr3=expression 'RIGHTPARENTHESES' {$ren.value.setExpression($expr3.value); $value = $ren.value;}
     );
 
 selection returns [Selection value]
@@ -200,10 +200,6 @@ thetaJoin returns [ThetaJoin value]
             $value.addComparison(comp);
         })* 'RIGHTCURLY';
 
-// LITERALS
-literal returns [String value]
-    : 'APOSTROPHE' STRING {$value = $STRING.text;} (STRING {$value = $value + " " + $STRING.text;})* 'APOSTROPHE';
-
 // COMPARISON
 comparisonOperator returns [ComparisonOperator value]
     : (
@@ -216,8 +212,12 @@ comparisonOperator returns [ComparisonOperator value]
         (
             'EQUAL' {$value = ComparisonOperator.GREATER_OR_EQUAL;}
         )? |
-        'EQUAL' {$value = ComparisonOperator.LESS_THAN;}
+        'EQUAL' {$value = ComparisonOperator.EQUAL;}
       );
+
+// LITERALS
+literal returns [String value]
+    : 'APOSTROPHE' STRING {$value = $STRING.text;} (STRING {$value = $value + " " + $STRING.text;})* 'APOSTROPHE';
 
 date returns [String value]
     @init {
@@ -247,9 +247,9 @@ name returns [String value]
     : STRING {$value = $STRING.text;};
 
 number returns [String value]
-    : NUMBER {$value = $NUMBER.text;};
+    : NUMBER {$value = $NUMBER.text;} ('DOT' NUMBER {$value = $value + "." + $NUMBER.text;})?;
 
-// BASIC
-WS : (' ' | '\t' | '\n' | '\r'  )+ -> skip;
+// LEXER
+WS : (' ' | '\t' | '\n' | '\r')+ -> skip;
 STRING : ('a'..'z'|'A'..'Z') ('a'..'z' | 'A'..'Z' | ('0'..'9') | '_' | '-')*;
 NUMBER : ('0'..'9') ('0'..'9')*;
