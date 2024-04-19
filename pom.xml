@@ -64,6 +64,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Relational Algebra -->
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4</artifactId>
+            <version>4.13.1</version>
+        </dependency>
+
         <!-- Spring Dev -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -218,6 +225,21 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Antlr -->
+<!--            <plugin>-->
+<!--                <groupId>org.antlr</groupId>-->
+<!--                <artifactId>antlr4-maven-plugin</artifactId>-->
+<!--                <version>4.13.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>antlr</id>-->
+<!--                        <goals>-->
+<!--                            <goal>antlr4</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 
