@@ -48,7 +48,8 @@ class SqlSchemaServiceTest {
         schemaService = new SqlSchemaService(new JdbcConnectionParameters(
             postgresContainer.getJdbcUrl(),
             new JdbcConnectionParameters.UserCredentials(postgresContainer.getUsername(), postgresContainer.getPassword()),
-            new JdbcConnectionParameters.UserCredentials("test_executor", "test_executor_pwd")
+            new JdbcConnectionParameters.UserCredentials("test_executor", "test_executor_pwd"),
+            1, 10000, 1000
         ));
     }
 

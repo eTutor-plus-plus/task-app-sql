@@ -19,6 +19,12 @@ spring:
   jpa:
     show-sql: false
 
+# JDBC
+jdbc:
+  max-pool-size: 15
+  max-lifetime: 1800000 # 30 minutes
+  connection-timeout: 15000 # 15 seconds
+
 # Specify the following settings via environment variables in the docker container.
 ## Database
 #spring:
@@ -55,3 +61,4 @@ spring:
 #  executor:
 #    username: etutor_sql_executor
 #    password: TBD
+#sql-url: https://etutor.dke.uni-linz.ac.at/api/forwardPublic/sql/query/

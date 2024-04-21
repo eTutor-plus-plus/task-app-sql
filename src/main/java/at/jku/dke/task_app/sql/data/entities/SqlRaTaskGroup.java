@@ -1,6 +1,7 @@
 package at.jku.dke.task_app.sql.data.entities;
 
 import at.jku.dke.etutor.task_app.data.entities.BaseTaskGroup;
+import at.jku.dke.task_app.sql.dto.SchemaInfoDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -27,7 +28,7 @@ public class SqlRaTaskGroup extends BaseTaskGroup {
 
     @Column(name = "schema_description")
     @JdbcTypeCode(SqlTypes.JSON)
-    private String schemaDescription;
+    private SchemaInfoDto schemaDescription;
 
     /**
      * Creates a new instance of class {@link SqlRaTaskGroup}.
@@ -112,7 +113,7 @@ public class SqlRaTaskGroup extends BaseTaskGroup {
      *
      * @return The schema description.
      */
-    public String getSchemaDescription() {
+    public SchemaInfoDto getSchemaDescription() {
         return schemaDescription;
     }
 
@@ -121,7 +122,7 @@ public class SqlRaTaskGroup extends BaseTaskGroup {
      *
      * @param schemaDescription The schema description.
      */
-    public void setSchemaDescription(String schemaDescription) {
+    public void setSchemaDescription(SchemaInfoDto schemaDescription) {
         this.schemaDescription = schemaDescription;
     }
 }

@@ -1,6 +1,9 @@
 package at.jku.dke.task_app.sql.data.entities;
 
+import at.jku.dke.task_app.sql.dto.SchemaInfoDto;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -66,7 +69,7 @@ class SqlRaTaskGroupTest {
     void testGetSetSchemaDescription() {
         // Arrange
         var task = new SqlRaTaskGroup();
-        final String value = "description";
+        final SchemaInfoDto value = new SchemaInfoDto(List.of());
 
         // Act
         task.setSchemaDescription(value);

@@ -87,6 +87,42 @@ class BinaryOperatorImplTest {
         assertThat(operator.getSchemaAttributes()).containsExactly("E1", "E2");
     }
 
+    @Test
+    void calculateSchema_leftNull() {
+        // Arrange
+        var operator = new BinaryOperatorTestImpl();
+
+        var expr = new TestExpression("E1");
+        operator.setLeftExpression(expr);
+
+        var schema = new SchemaInfoDto(List.of());
+
+        // Act
+        operator.calculateSchema(schema);
+
+        // Assert
+        assertEquals(1, expr.calculateSchemaCallCount);
+        assertThat(operator.getSchemaAttributes()).containsExactly("E1");
+    }
+
+    @Test
+    void calculateSchema_rightNull() {
+        // Arrange
+        var operator = new BinaryOperatorTestImpl();
+
+        var expr = new TestExpression("E1");
+        operator.setRightExpression(expr);
+
+        var schema = new SchemaInfoDto(List.of());
+
+        // Act
+        operator.calculateSchema(schema);
+
+        // Assert
+        assertEquals(1, expr.calculateSchemaCallCount);
+        assertThat(operator.getSchemaAttributes()).containsExactly("E1");
+    }
+
     private static class BinaryOperatorTestImpl extends BinaryOperatorImpl {
     }
 }

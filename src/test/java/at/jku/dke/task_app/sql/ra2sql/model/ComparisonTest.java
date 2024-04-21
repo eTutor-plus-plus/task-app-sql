@@ -154,12 +154,12 @@ class ComparisonTest {
     }
 
     @Test
-    void setRightValueType() {
+    void setRightValueType_null() {
         // Arrange
         var comparison = new Comparison();
 
         // Act
-        var set = comparison.setRightValue(null);
+        var set = comparison.setRightValueType(null);
 
         // Assert
         assertFalse(set);

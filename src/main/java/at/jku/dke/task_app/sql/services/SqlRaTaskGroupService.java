@@ -11,10 +11,9 @@ import at.jku.dke.task_app.sql.data.repositories.SqlRaTaskGroupRepository;
 import at.jku.dke.task_app.sql.dto.ModifySqlTaskGroupDto;
 import at.jku.dke.task_app.sql.dto.SchemaInfoDto;
 import at.jku.dke.task_app.sql.dto.TableDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ValidationException;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,9 +31,9 @@ import java.util.Locale;
 public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, ModifySqlTaskGroupDto> {
 
     private final MessageSource messageSource;
-    private final ObjectMapper objectMapper;
     private final JdbcConnectionParameters jdbcConnectionParameters;
     private final SqlRaTaskGroupQueryRepository queryRepository;
+    private final String sqlUrl;
 
     /**
      * Creates a new instance of class {@link SqlRaTaskGroupService}.
@@ -42,16 +41,17 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
      * @param repository               The task group repository.
      * @param messageSource            The message source.
      * @param jdbcConnectionParameters The JDBC connection details.
-     * @param objectMapper             The JSON object mapper.
      * @param queryRepository          The task group query repository.
+     * @param sqlUrl                   The public SQL url.
      */
     public SqlRaTaskGroupService(SqlRaTaskGroupRepository repository, SqlRaTaskGroupQueryRepository queryRepository,
-                                 MessageSource messageSource, ObjectMapper objectMapper, JdbcConnectionParameters jdbcConnectionParameters) {
+                                 MessageSource messageSource, JdbcConnectionParameters jdbcConnectionParameters,
+                                 @Value("${sql-url}") String sqlUrl) {
         super(repository);
         this.messageSource = messageSource;
-        this.objectMapper = objectMapper;
         this.jdbcConnectionParameters = jdbcConnectionParameters;
         this.queryRepository = queryRepository;
+        this.sqlUrl = sqlUrl;
     }
 
     //#region --- CREATE ---
@@ -76,12 +76,8 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
             var result = service.create(taskGroup.getSchemaName(), taskGroup.getDdlStatements(), taskGroup.getDiagnoseDmlStatements(), taskGroup.getSubmitDmlStatements());
             result = this.createTaskGroupQueries(taskGroup, result);
 
-            try {
-                taskGroup.setSchemaDescription(this.objectMapper.writeValueAsString(result));
-                this.repository.save(taskGroup);
-            } catch (JsonProcessingException ex) {
-                LOG.error("Could not serialize task group schema description", ex);
-            }
+            taskGroup.setSchemaDescription(result);
+            this.repository.save(taskGroup);
         } catch (SQLException ex) {
             this.repository.delete(taskGroup);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not create database tables for task group: " + ex.getMessage());
@@ -122,12 +118,7 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
             try (var service = new SqlSchemaService(this.jdbcConnectionParameters)) {
                 var result = service.create(taskGroup.getSchemaName(), modifyTaskGroupDto.additionalData().ddlStatements(), modifyTaskGroupDto.additionalData().diagnoseDmlStatements(), modifyTaskGroupDto.additionalData().submitDmlStatements());
                 result = this.updateTaskGroupQueries(taskGroup, result);
-
-                try {
-                    taskGroup.setSchemaDescription(this.objectMapper.writeValueAsString(result));
-                } catch (JsonProcessingException ex) {
-                    LOG.error("Could not serialize task group schema description", ex);
-                }
+                taskGroup.setSchemaDescription(result);
             } catch (SQLException ex) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not update database tables for task group: " + ex.getMessage());
             }
@@ -181,12 +172,7 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
             return "";
 
         // Parse schema info
-        SchemaInfoDto dto;
-        try {
-            dto = this.objectMapper.readValue(taskGroup.getSchemaDescription(), SchemaInfoDto.class);
-        } catch (JsonProcessingException ex) {
-            return "";
-        }
+        SchemaInfoDto dto = taskGroup.getSchemaDescription();
 
         // Build
         StringBuilder sb = new StringBuilder("<div style=\"font-family: monospace;\">");
@@ -203,8 +189,7 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
         // Tables
         for (var table : dto.tables()) {
             sb.append("<a target=\"_blank\" href=\"");
-            sb.append("https://etutor.dke.uni-linz.ac.at/api/forwardPublic/sql/query/").append(table.queryId()).append("\">").append(table.name()).append("</a> (");
-            // TODO: make link configurable
+            sb.append(this.sqlUrl).append(table.queryId()).append("\">").append(table.name()).append("</a> (");
 
             // PK columns
             sb.append("<u>");
