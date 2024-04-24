@@ -5,6 +5,8 @@ import at.jku.dke.etutor.task_app.dto.SubmissionMode;
 import at.jku.dke.task_app.sql.evaluation.SqlEvaluationCriterion;
 import at.jku.dke.task_app.sql.evaluation.analyzer.*;
 import at.jku.dke.task_app.sql.evaluation.grading.SqlGrading;
+import at.jku.dke.task_app.sql.ra2sql.RelationalAlgebraConverter;
+import at.jku.dke.task_app.sql.ra2sql.RelationalAlgebraParseException;
 import org.springframework.context.MessageSource;
 
 import java.sql.SQLException;
@@ -271,6 +273,10 @@ public class SqlReport {
         String message = "<strong>" + syntaxException.getMessage() + "</strong>";
         if (syntaxException instanceof SQLException sex)
             message += "<br>Code: " + sex.getErrorCode() + ", State: " + sex.getSQLState();
+        else if (syntaxException instanceof RelationalAlgebraParseException rex) {
+            message = RelationalAlgebraConverter.convertParserSyntaxToRaSyntax(message);
+            message += "<br>Parser rule: " + rex.getRuleName() + ", Line: " + rex.getLine();
+        }
 
         return Optional.of(new CriterionDto(
             this.messageSource.getMessage("criterium.result", null, this.locale),

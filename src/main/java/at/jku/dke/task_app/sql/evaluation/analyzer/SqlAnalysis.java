@@ -17,7 +17,7 @@ public class SqlAnalysis {
     /**
      * Creates a new instance of class {@link SqlAnalysis}.
      */
-    protected SqlAnalysis() {
+    public SqlAnalysis() {
         this.criterionAnalysis = new HashMap<>();
     }
 
@@ -27,7 +27,7 @@ public class SqlAnalysis {
      * @return The query result of the submission.
      */
     public QueryResult getQueryResult() {
-        return queryResult;
+        return this.queryResult;
     }
 
     /**
@@ -45,7 +45,7 @@ public class SqlAnalysis {
      * @return The analysis exception.
      */
     public Throwable getAnalysisException() {
-        return analysisException;
+        return this.analysisException;
     }
 
     /**
@@ -53,7 +53,7 @@ public class SqlAnalysis {
      *
      * @param analysisException The analysis exception.
      */
-    void setAnalysisException(Throwable analysisException) {
+    public void setAnalysisException(Throwable analysisException) {
         this.analysisException = analysisException;
     }
 
@@ -63,7 +63,7 @@ public class SqlAnalysis {
      * @return The criterion analysis.
      */
     public Map<SqlEvaluationCriterion, SqlCriterionAnalysis> getCriterionAnalysis() {
-        return Collections.unmodifiableMap(criterionAnalysis);
+        return Collections.unmodifiableMap(this.criterionAnalysis);
     }
 
     /**
@@ -73,7 +73,7 @@ public class SqlAnalysis {
      * @return The criterion analysis.
      */
     public SqlCriterionAnalysis getCriterionAnalysis(SqlEvaluationCriterion criterion) {
-        return criterionAnalysis.get(criterion);
+        return this.criterionAnalysis.get(criterion);
     }
 
     /**
@@ -83,6 +83,6 @@ public class SqlAnalysis {
      * @param value The analysis.
      */
     void addCriterionAnalysis(SqlEvaluationCriterion key, SqlCriterionAnalysis value) {
-        criterionAnalysis.put(key, value);
+        this.criterionAnalysis.put(key, value);
     }
 }

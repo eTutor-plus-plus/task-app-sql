@@ -32,6 +32,7 @@ public final class RelationalAlgebraConverter {
         new Entry(new String(new char[]{960}), " PROJECTION ", true),
         new Entry(new String(new char[]{963}), " SELECTION ", true),
         new Entry(new String(new char[]{961}), " RENAMING ", true),
+        new Entry(new String(new char[]{10199}), " OUTER_JOIN ", true),
         new Entry(new String(new char[]{8904}), " JOIN ", true),
         new Entry(new String(new char[]{10199}), " OUTER_JOIN ", true),
         new Entry(new String(new char[]{8906}), " RIGHTSEMI ", true),
