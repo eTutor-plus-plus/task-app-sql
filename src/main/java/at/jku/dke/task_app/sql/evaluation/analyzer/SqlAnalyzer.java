@@ -52,9 +52,10 @@ public class SqlAnalyzer {
         }
         if (!this.queryOnlyContainsSelect(submission)) {
             LOG.warn("Possible malicious SQL statement detected: {}", submission);
-            analysis.setAnalysisException(new ValidationException("Query does not contain SELECT"));
+            analysis.setAnalysisException(new ValidationException("Query contains prohibited keywords"));
             return analysis;
         }
+        submission = submission.trim();
         if (submission.endsWith(";"))
             submission = submission.substring(0, submission.length() - 1);
 
@@ -268,7 +269,7 @@ public class SqlAnalyzer {
             LOG.debug("Executing solution query for getting column names for analysing tuples");
             var rsColSolution = stmt.executeQuery(solution);
             for (int i = 1; i <= rsColSolution.getMetaData().getColumnCount(); i++) {
-                analysis.addColumnLabel(rsColSolution.getMetaData().getColumnName(i));
+                analysis.addColumnLabel(rsColSolution.getMetaData().getColumnName(i).toUpperCase());
             }
 
             String columns = String.join(", ", analysis.getColumnLabels());
@@ -376,7 +377,7 @@ public class SqlAnalyzer {
             var tuple = new ArrayList<String>(colCount);
             for (int i = 1; i <= colCount; i++) {
                 String value = rs.getString(i);
-                tuple.add(value == null ? "NULL" : value.toUpperCase());
+                tuple.add(value == null ? "NULL" : value);
             }
             tuples.add(tuple);
         }
@@ -417,20 +418,32 @@ public class SqlAnalyzer {
      */
     private boolean queryOnlyContainsSelect(String query) {
         String normalizedQuery = query.toLowerCase().replace("\n", " ").replace("\r", " ").replace("\t", " ");
-        if (normalizedQuery.contains("alter "))
+        if (normalizedQuery.contains("information_schema."))
             return false;
-        if (normalizedQuery.contains("create "))
+        if (normalizedQuery.contains("pg_catalog."))
             return false;
-        if (normalizedQuery.contains("drop "))
+        if (normalizedQuery.contains("current_database"))
             return false;
-        if (normalizedQuery.contains("set "))
+        if (normalizedQuery.contains("current_catalog"))
             return false;
-        if (normalizedQuery.contains("insert into "))
+        if (normalizedQuery.contains("current_schema"))
             return false;
-        if (normalizedQuery.contains("update "))
+        if (normalizedQuery.contains("session_user"))
+            return false;
+        if (normalizedQuery.contains("current_user"))
+            return false;
+        if (normalizedQuery.contains("system_user"))
+            return false;
+        if (normalizedQuery.contains("current_role"))
+            return false;
+        if (normalizedQuery.contains("inet_client_"))
+            return false;
+        if (normalizedQuery.contains("inet_server_"))
+            return false;
+        if (normalizedQuery.contains("pg_"))
             return false;
         //noinspection RedundantIfStatement
-        if (normalizedQuery.contains("delete from "))
+        if (normalizedQuery.contains("version()"))
             return false;
         return true;
     }

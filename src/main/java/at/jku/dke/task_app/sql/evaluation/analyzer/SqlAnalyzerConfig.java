@@ -10,7 +10,6 @@ import java.util.Set;
  * Configuration for the SQL analyzer.
  */
 public class SqlAnalyzerConfig {
-    private int feedbackLevel;
     private final Set<SqlEvaluationCriterion> criteria;
     private final String solution;
     private final String schema;
@@ -24,6 +23,8 @@ public class SqlAnalyzerConfig {
     public SqlAnalyzerConfig(String solution, String schema) {
         this.schema = schema;
         this.criteria = new HashSet<>();
+
+        solution = solution.trim();
         this.solution = solution.endsWith(";") ? solution.substring(0, solution.length() - 1) : solution;
     }
 
@@ -43,24 +44,6 @@ public class SqlAnalyzerConfig {
      */
     String getSchema() {
         return this.schema;
-    }
-
-    /**
-     * Gets the feedback level.
-     *
-     * @return The feedback level.
-     */
-    int getFeedbackLevel() {
-        return this.feedbackLevel;
-    }
-
-    /**
-     * Sets the feedback level.
-     *
-     * @param feedbackLevel The feedback level.
-     */
-    public void setFeedbackLevel(int feedbackLevel) {
-        this.feedbackLevel = feedbackLevel;
     }
 
     /**

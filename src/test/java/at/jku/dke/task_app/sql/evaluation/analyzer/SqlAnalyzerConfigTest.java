@@ -35,20 +35,6 @@ class SqlAnalyzerConfigTest {
     }
 
     @Test
-    void getSetFeedbackLevel() {
-        // Arrange
-        final int level = 3;
-        var config = new SqlAnalyzerConfig("", "");
-
-        // Act
-        config.setFeedbackLevel(level);
-        var result = config.getFeedbackLevel();
-
-        // Assert
-        assertEquals(level, result);
-    }
-
-    @Test
     void getAddCriteria() {
         // Arrange
         final SqlEvaluationCriterion criterion = SqlEvaluationCriterion.CARTESIAN_PRODUCT;

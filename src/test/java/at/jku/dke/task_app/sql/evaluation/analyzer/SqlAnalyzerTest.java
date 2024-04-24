@@ -72,7 +72,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = null;
         var config = new SqlAnalyzerConfig("SELECT * FROM departments;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
 
         // Act
@@ -89,7 +88,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "  \t ";
         var config = new SqlAnalyzerConfig("SELECT * FROM departments;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
 
         // Act
@@ -106,7 +104,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "ALTER USER etutor IDENTIFIED BY 'newPwd';";
         var config = new SqlAnalyzerConfig("SELECT * FROM departments;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
 
         // Act
@@ -124,7 +121,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "SELECT * FROM not_existing_table;";
         var config = new SqlAnalyzerConfig("SELECT * FROM departments;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
 
         // Act
@@ -144,7 +140,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "SELECT * FROM departments;";
         var config = new SqlAnalyzerConfig("SELECT * FROM not_existing_table;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
         config.addCriterion(SqlEvaluationCriterion.CARTESIAN_PRODUCT);
 
@@ -166,7 +161,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "SELECT name, salary FROM employees;";
         var config = new SqlAnalyzerConfig("SELECT name FROM employees;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_COLUMNS);
 
@@ -188,7 +182,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "SELECT name FROM employees;";
         var config = new SqlAnalyzerConfig("SELECT name, salary FROM employees;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_COLUMNS);
 
@@ -210,7 +203,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "SELECT name, salary FROM employees;";
         var config = new SqlAnalyzerConfig("SELECT name, salary FROM employees;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_COLUMNS);
 
@@ -234,7 +226,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "SELECT name, salary, id FROM employees";
         var config = new SqlAnalyzerConfig("SELECT name, salary FROM employees WHERE salary < 4000", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_COLUMNS);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_TUPLES);
@@ -256,7 +247,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "SELECT salary, name FROM employees WHERE salary < 4000;";
         var config = new SqlAnalyzerConfig("SELECT name, salary FROM employees;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_COLUMNS);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_TUPLES);
@@ -278,7 +268,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "SELECT salary, name FROM employees WHERE salary <= 4500;";
         var config = new SqlAnalyzerConfig("SELECT name, salary FROM employees WHERE salary < 4500;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_COLUMNS);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_TUPLES);
@@ -303,7 +292,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "SELECT name, salary FROM employees ORDER BY salary DESC;";
         var config = new SqlAnalyzerConfig("SELECT name, salary FROM employees;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_COLUMNS);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_TUPLES);
@@ -325,7 +313,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "SELECT name, salary, id FROM employees ORDER BY salary;";
         var config = new SqlAnalyzerConfig("SELECT salary, name FROM employees ORDER BY salary DESC;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_COLUMNS);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_TUPLES);
@@ -347,7 +334,6 @@ class SqlAnalyzerTest {
         // Arrange
         final String submission = "SELECT name, salary FROM employees ORDER BY salary DESC;";
         var config = new SqlAnalyzerConfig("SELECT salary, name FROM employees ORDER BY salary DESC;", this.schema);
-        config.setFeedbackLevel(1);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_COLUMNS);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_TUPLES);
