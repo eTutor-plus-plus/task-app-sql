@@ -54,6 +54,16 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
         this.sqlUrl = sqlUrl;
     }
 
+    /**
+     * Creates a new schema service.
+     *
+     * @return Schema service
+     * @throws SQLException If the connection cannot be established.
+     */
+    protected SqlSchemaService createSchemaService() throws SQLException {
+        return new SqlSchemaServiceImpl(this.jdbcConnectionParameters);
+    }
+
     //#region --- CREATE ---
     @Override
     protected SqlRaTaskGroup createTaskGroup(long id, ModifyTaskGroupDto<ModifySqlTaskGroupDto> modifyTaskGroupDto) {
@@ -72,7 +82,7 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
 
     @Override
     protected void afterCreate(SqlRaTaskGroup taskGroup, ModifyTaskGroupDto<ModifySqlTaskGroupDto> dto) {
-        try (var service = new SqlSchemaService(this.jdbcConnectionParameters)) {
+        try (var service = new SqlSchemaServiceImpl(this.jdbcConnectionParameters)) {
             var result = service.create(taskGroup.getSchemaName(), taskGroup.getDdlStatements(), taskGroup.getDiagnoseDmlStatements(), taskGroup.getSubmitDmlStatements());
             result = this.createTaskGroupQueries(taskGroup, result);
 
@@ -115,8 +125,9 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
                              modifyTaskGroupDto.additionalData().submitDmlStatements().equals(taskGroup.getSubmitDmlStatements());
 
         if (!dbDidNotChange) {
-            try (var service = new SqlSchemaService(this.jdbcConnectionParameters)) {
-                var result = service.create(taskGroup.getSchemaName(), modifyTaskGroupDto.additionalData().ddlStatements(), modifyTaskGroupDto.additionalData().diagnoseDmlStatements(), modifyTaskGroupDto.additionalData().submitDmlStatements());
+            try (var service = this.createSchemaService()) {
+                var result = service.create(taskGroup.getSchemaName(), modifyTaskGroupDto.additionalData().ddlStatements(),
+                    modifyTaskGroupDto.additionalData().diagnoseDmlStatements(), modifyTaskGroupDto.additionalData().submitDmlStatements());
                 result = this.updateTaskGroupQueries(taskGroup, result);
                 taskGroup.setSchemaDescription(result);
             } catch (SQLException ex) {
@@ -155,7 +166,7 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
     @Override
     protected void afterDelete(long id) {
         final String schemaPrefix = buildSchemaName(id);
-        try (var service = new SqlSchemaService(this.jdbcConnectionParameters)) {
+        try (var service = this.createSchemaService()) {
             service.deleteSchemas(schemaPrefix);
             service.commit();
         } catch (SQLException ex) {
@@ -249,8 +260,13 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
      * @throws jakarta.validation.ValidationException If the statements are invalid.
      */
     private void validateStatements(ModifyTaskGroupDto<ModifySqlTaskGroupDto> modifyTaskGroupDto) {
+        // DDL
+        var tmp = modifyTaskGroupDto.additionalData().ddlStatements().toLowerCase();
+        if (tmp.contains("insert into"))
+            throw new ValidationException("DDL Statements must not contain INSERT INTO statements.");
+
         // DIAGNOSE
-        var tmp = modifyTaskGroupDto.additionalData().diagnoseDmlStatements().toLowerCase();
+        tmp = modifyTaskGroupDto.additionalData().diagnoseDmlStatements().toLowerCase();
         if (tmp.contains("create table") || tmp.contains("alter table"))
             throw new ValidationException("Diagnose DML Statements must not contain CREATE or ALTER-table statements.");
 

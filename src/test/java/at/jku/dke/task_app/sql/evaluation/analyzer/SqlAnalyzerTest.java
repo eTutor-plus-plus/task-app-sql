@@ -102,7 +102,7 @@ class SqlAnalyzerTest {
     @Test
     void analyzeMaliciousSubmission() {
         // Arrange
-        final String submission = "ALTER USER etutor IDENTIFIED BY 'newPwd';";
+        final String submission = "SELECT current_user();";
         var config = new SqlAnalyzerConfig("SELECT * FROM departments;", this.schema);
         config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
 

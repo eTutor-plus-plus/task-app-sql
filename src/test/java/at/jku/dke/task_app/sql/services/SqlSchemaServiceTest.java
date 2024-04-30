@@ -45,13 +45,24 @@ class SqlSchemaServiceTest {
 
     @BeforeEach
     void setUp() throws SQLException {
-        schemaService = new SqlSchemaService(new JdbcConnectionParameters(
+        schemaService = new SqlSchemaServiceImpl(new JdbcConnectionParameters(
             postgresContainer.getJdbcUrl(),
             new JdbcConnectionParameters.UserCredentials(postgresContainer.getUsername(), postgresContainer.getPassword()),
             new JdbcConnectionParameters.UserCredentials("test_executor", "test_executor_pwd"),
             1, 10000, 1000
         ));
     }
+
+    //#region --- create ---
+    @Test
+    void testCreateInvalidSchemaName() {
+        // Arrange
+        final String schemaPrefix = "m@.3";
+
+        // Act & Assert
+        assertThrows(SQLException.class, () -> schemaService.create(schemaPrefix, "", "", ""));
+    }
+    //#endregion
 
     //#region --- createSchemas ---
     @Test
@@ -80,6 +91,15 @@ class SqlSchemaServiceTest {
 
         assertTrue(submissionFound);
         assertTrue(diagnoseFound);
+    }
+
+    @Test
+    void testCreateSchemaInvalidName() {
+        // Arrange
+        final String schemaPrefix = "m@.3";
+
+        // Act & Assert
+        assertThrows(SQLException.class, () -> schemaService.createSchemas(schemaPrefix));
     }
     //#endregion
 
@@ -126,6 +146,22 @@ class SqlSchemaServiceTest {
             rs = con.getMetaData().getTables(null, (schemaPrefix + SqlSchemaService.SUFFIX_DIAGNOSE).toLowerCase(), "emp", null);
             assertTrue(rs.next());
         }
+    }
+
+    @Test
+    void testCreateTablesInvalidDdl() throws SQLException {
+        // Arrange
+        final String schemaPrefix = "testCreateTablesInvalidDdl";
+        schemaService.createSchemas(schemaPrefix);
+
+        final String statements = """
+            CREATE TABLE dept (
+                id INT PRIMARY
+            );
+            """;
+
+        // Act & Assert
+        assertThrows(SQLException.class, () -> schemaService.createTables(schemaPrefix, statements));
     }
     //#endregion
 
@@ -381,7 +417,16 @@ class SqlSchemaServiceTest {
     }
 
     @Test
-    void testDeleteSchemasNotThrowExceptionOnInvalidSchema() {
+    void testDeleteSchemasInvalidSchemaName() {
+        // Arrange
+        final String schemaPrefix = "m.@3";
+
+        // Act & Assert
+        assertThrows(SQLException.class, () -> schemaService.deleteSchemas(schemaPrefix));
+    }
+
+    @Test
+    void testDeleteSchemasNotThrowExceptionOnNotExistingSchema() {
         // Arrange
         final String schemaPrefix = "deleteSchemas_notExistingSchema_notThrowException";
 
