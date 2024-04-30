@@ -73,6 +73,7 @@ services:
             CLIENTS_API_KEYS_2_KEY: key-for-reading-submissions
             CLIENTS_API_KEYS_2_ROLES_0: READ_SUBMISSION
             SQL_URL: https://etutor.dke.uni-linz.ac.at/api/forwardPublic/sql/query/
+            JDBC_URL: jdbc:postgresql://postgres:5432/etutor_sql_exercises
             JDBC_ADMIN_USERNAME: etutor_sql_admin
             JDBC_ADMIN_PASSWORD: secret
             JDBC_EXECUTOR_USERNAME: etutor_sql_executor
