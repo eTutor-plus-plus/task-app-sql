@@ -11,8 +11,9 @@ import at.jku.dke.task_app.sql.data.repositories.SqlRaTaskGroupRepository;
 import at.jku.dke.task_app.sql.dto.ModifySqlTaskGroupDto;
 import at.jku.dke.task_app.sql.dto.SchemaInfoDto;
 import at.jku.dke.task_app.sql.dto.TableDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.ValidationException;
+import org.apache.logging.log4j.util.TriConsumer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,9 +31,9 @@ import java.util.Locale;
 public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, ModifySqlTaskGroupDto> {
 
     private final MessageSource messageSource;
-    private final ObjectMapper objectMapper;
     private final JdbcConnectionParameters jdbcConnectionParameters;
     private final SqlRaTaskGroupQueryRepository queryRepository;
+    private final String sqlUrl;
 
     /**
      * Creates a new instance of class {@link SqlRaTaskGroupService}.
@@ -40,15 +41,27 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
      * @param repository               The task group repository.
      * @param messageSource            The message source.
      * @param jdbcConnectionParameters The JDBC connection details.
-     * @param objectMapper             The JSON object mapper.
      * @param queryRepository          The task group query repository.
+     * @param sqlUrl                   The public SQL url.
      */
-    public SqlRaTaskGroupService(SqlRaTaskGroupRepository repository, SqlRaTaskGroupQueryRepository queryRepository, MessageSource messageSource, ObjectMapper objectMapper, JdbcConnectionParameters jdbcConnectionParameters) {
+    public SqlRaTaskGroupService(SqlRaTaskGroupRepository repository, SqlRaTaskGroupQueryRepository queryRepository,
+                                 MessageSource messageSource, JdbcConnectionParameters jdbcConnectionParameters,
+                                 @Value("${sql-url}") String sqlUrl) {
         super(repository);
         this.messageSource = messageSource;
-        this.objectMapper = objectMapper;
         this.jdbcConnectionParameters = jdbcConnectionParameters;
         this.queryRepository = queryRepository;
+        this.sqlUrl = sqlUrl;
+    }
+
+    /**
+     * Creates a new schema service.
+     *
+     * @return Schema service
+     * @throws SQLException If the connection cannot be established.
+     */
+    protected SqlSchemaService createSchemaService() throws SQLException {
+        return new SqlSchemaServiceImpl(this.jdbcConnectionParameters);
     }
 
     //#region --- CREATE ---
@@ -69,16 +82,12 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
 
     @Override
     protected void afterCreate(SqlRaTaskGroup taskGroup, ModifyTaskGroupDto<ModifySqlTaskGroupDto> dto) {
-        try (var service = new SqlSchemaService(this.jdbcConnectionParameters)) {
+        try (var service = new SqlSchemaServiceImpl(this.jdbcConnectionParameters)) {
             var result = service.create(taskGroup.getSchemaName(), taskGroup.getDdlStatements(), taskGroup.getDiagnoseDmlStatements(), taskGroup.getSubmitDmlStatements());
             result = this.createTaskGroupQueries(taskGroup, result);
 
-            try {
-                taskGroup.setSchemaDescription(this.objectMapper.writeValueAsString(result));
-                this.repository.save(taskGroup);
-            } catch (JsonProcessingException ex) {
-                LOG.error("Could not serialize task group schema description", ex);
-            }
+            taskGroup.setSchemaDescription(result);
+            this.repository.save(taskGroup);
         } catch (SQLException ex) {
             this.repository.delete(taskGroup);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not create database tables for task group: " + ex.getMessage());
@@ -116,15 +125,11 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
                              modifyTaskGroupDto.additionalData().submitDmlStatements().equals(taskGroup.getSubmitDmlStatements());
 
         if (!dbDidNotChange) {
-            try (var service = new SqlSchemaService(this.jdbcConnectionParameters)) {
-                var result = service.create(taskGroup.getSchemaName(), modifyTaskGroupDto.additionalData().ddlStatements(), modifyTaskGroupDto.additionalData().diagnoseDmlStatements(), modifyTaskGroupDto.additionalData().submitDmlStatements());
+            try (var service = this.createSchemaService()) {
+                var result = service.create(taskGroup.getSchemaName(), modifyTaskGroupDto.additionalData().ddlStatements(),
+                    modifyTaskGroupDto.additionalData().diagnoseDmlStatements(), modifyTaskGroupDto.additionalData().submitDmlStatements());
                 result = this.updateTaskGroupQueries(taskGroup, result);
-
-                try {
-                    taskGroup.setSchemaDescription(this.objectMapper.writeValueAsString(result));
-                } catch (JsonProcessingException ex) {
-                    LOG.error("Could not serialize task group schema description", ex);
-                }
+                taskGroup.setSchemaDescription(result);
             } catch (SQLException ex) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not update database tables for task group: " + ex.getMessage());
             }
@@ -161,7 +166,7 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
     @Override
     protected void afterDelete(long id) {
         final String schemaPrefix = buildSchemaName(id);
-        try (var service = new SqlSchemaService(this.jdbcConnectionParameters)) {
+        try (var service = this.createSchemaService()) {
             service.deleteSchemas(schemaPrefix);
             service.commit();
         } catch (SQLException ex) {
@@ -171,12 +176,71 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
 
     //#endregion
 
+    //#region --- DESCRIPTION ---
+
+    private String generateSchemaDescription(SqlRaTaskGroup taskGroup) {
+        if (taskGroup.getSchemaDescription() == null)
+            return "";
+
+        // Parse schema info
+        SchemaInfoDto dto = taskGroup.getSchemaDescription();
+
+        // Build
+        StringBuilder sb = new StringBuilder("<div style=\"font-family: monospace;\">");
+        TriConsumer<StringBuilder, TableDto, String> colFunc = (s, table, col) -> {
+            boolean isFk = table.foreignKeys().stream().anyMatch(f -> f.columns().contains(col));
+            if (isFk)
+                s.append("<i>");
+            s.append(col);
+            if (isFk)
+                s.append("</i>");
+            s.append(", ");
+        };
+
+        // Tables
+        for (var table : dto.tables()) {
+            sb.append("<a target=\"_blank\" href=\"");
+            sb.append(this.sqlUrl).append(table.queryId()).append("\">").append(table.name()).append("</a> (");
+
+            // PK columns
+            sb.append("<u>");
+            table.columns().stream().filter(TableDto.ColumnDto::primaryKey).forEach(x -> colFunc.accept(sb, table, x.name()));
+            sb.deleteCharAt(sb.length() - 1);
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append("</u>");
+            if (table.columns().stream().anyMatch(x -> !x.primaryKey()))
+                sb.append(", ");
+
+            // Other columns
+            table.columns().stream().filter(x -> !x.primaryKey()).forEach(x -> colFunc.accept(sb, table, x.name()));
+
+            // Remove last comma
+            sb.deleteCharAt(sb.length() - 1);
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append(")<br>");
+        }
+        sb.append("<br>");
+
+        // Inclusions
+        for (var table : dto.tables()) {
+            for (var fk : table.foreignKeys()) {
+                sb.append(fk.table()).append('(').append(String.join(", ", fk.columns())).append(") ⊆ ");
+                sb.append(fk.referencedTable()).append('(').append(String.join(", ", fk.referencedColumns())).append(") <br>");
+            }
+        }
+
+        sb.append("</div>");
+        return sb.toString();
+    }
+
+    //#endregion
+
     @Override
     protected TaskGroupModificationResponseDto mapToReturnData(SqlRaTaskGroup taskGroup, boolean create) {
-        // TODO
+        var text = this.generateSchemaDescription(taskGroup);
         return new TaskGroupModificationResponseDto(
-            this.messageSource.getMessage("defaultTaskGroupDescription", new Object[]{}, Locale.GERMAN),
-            this.messageSource.getMessage("defaultTaskGroupDescription", new Object[]{}, Locale.ENGLISH));
+            this.messageSource.getMessage("defaultTaskGroupDescription", new Object[]{text}, Locale.GERMAN),
+            this.messageSource.getMessage("defaultTaskGroupDescription", new Object[]{text}, Locale.ENGLISH));
     }
 
     /**
@@ -196,6 +260,19 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
      * @throws jakarta.validation.ValidationException If the statements are invalid.
      */
     private void validateStatements(ModifyTaskGroupDto<ModifySqlTaskGroupDto> modifyTaskGroupDto) {
-        // TODO (siehe auch etutorpp??)
+        // DDL
+        var tmp = modifyTaskGroupDto.additionalData().ddlStatements().toLowerCase();
+        if (tmp.contains("insert into"))
+            throw new ValidationException("DDL Statements must not contain INSERT INTO statements.");
+
+        // DIAGNOSE
+        tmp = modifyTaskGroupDto.additionalData().diagnoseDmlStatements().toLowerCase();
+        if (tmp.contains("create table") || tmp.contains("alter table"))
+            throw new ValidationException("Diagnose DML Statements must not contain CREATE or ALTER-table statements.");
+
+        // SUBMIT
+        tmp = modifyTaskGroupDto.additionalData().submitDmlStatements().toLowerCase();
+        if (tmp.contains("create table") || tmp.contains("alter table"))
+            throw new ValidationException("Submission DML Statements must not contain CREATE or ALTER-table statements.");
     }
 }

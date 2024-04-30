@@ -6,7 +6,7 @@ This application provides a REST-interface for following task type: sql, relalg.
 
 In development environment, the API documentation is available at http://localhost:8081/docs.
 
-In order to run the application in development environment, the `dev` profile must be activated. 
+In order to run the application in development environment, the `dev` profile must be activated.
 This can be done by setting the environment variable `SPRING_PROFILES_ACTIVE` to `dev` or by setting the profile in the IDE run configuration.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
@@ -32,6 +32,7 @@ docker run -p 8090:8081 \
   -e CLIENTS_API_KEYS_2_NAME=plagiarism-checker \
   -e CLIENTS_API_KEYS_2_KEY=key-for-reading-submissions \
   -e CLIENTS_API_KEYS_2_ROLES_0=READ_SUBMISSION \
+  -e SQL_URL=https://etutor.dke.uni-linz.ac.at/api/forwardPublic/sql/query/ \
   etutorplusplus/task-app-sql
 ```
 
@@ -63,6 +64,7 @@ services:
             CLIENTS_API_KEYS_2_NAME: plagiarism-checker
             CLIENTS_API_KEYS_2_KEY: key-for-reading-submissions
             CLIENTS_API_KEYS_2_ROLES_0: READ_SUBMISSION
+            SQL_URL: https://etutor.dke.uni-linz.ac.at/api/forwardPublic/sql/query/
 ```
 
 ### Environment Variables
@@ -76,14 +78,15 @@ In production environment, the application requires two database users:
 
 The users must be configured via environment variables. The clients have to be configured via environment variables as well (`X`/`Y` stands for a 0-based index).
 
-| Variable                     | Description                                      |
-|------------------------------|--------------------------------------------------|
-| `SERVER_PORT`                | The server port.                                 |
-| `SPRING_DATASOURCE_URL`      | JDBC-URL to the database                         |
-| `SPRING_DATASOURCE_USERNAME` | The username of the JPA user.                    |
-| `SPRING_DATASOURCE_PASSWORD` | The password of the JPA user.                    |
-| `SPRING_FLYWAY_USER`         | The username of the database administrator user. |
-| `SPRING_FLYWAY_PASSWORD`     | The password of the database administrator user. |
-| `CLIENTS_API_KEYS_X_NAME`    | The name of the client.                          |
-| `CLIENTS_API_KEYS_X_KEY`     | The API key of the client.                       |
-| `CLIENTS_API_KEYS_X_ROLES_Y` | The role of the client.                          |
+| Variable                     | Description                                                                                      |
+|------------------------------|--------------------------------------------------------------------------------------------------|
+| `SERVER_PORT`                | The server port.                                                                                 |
+| `SPRING_DATASOURCE_URL`      | JDBC-URL to the database                                                                         |
+| `SPRING_DATASOURCE_USERNAME` | The username of the JPA user.                                                                    |
+| `SPRING_DATASOURCE_PASSWORD` | The password of the JPA user.                                                                    |
+| `SPRING_FLYWAY_USER`         | The username of the database administrator user.                                                 |
+| `SPRING_FLYWAY_PASSWORD`     | The password of the database administrator user.                                                 |
+| `CLIENTS_API_KEYS_X_NAME`    | The name of the client.                                                                          |
+| `CLIENTS_API_KEYS_X_KEY`     | The API key of the client.                                                                       |
+| `CLIENTS_API_KEYS_X_ROLES_Y` | The role of the client.                                                                          |
+| `SQL_URL`                    | The URL to the public SQL query URL (must end with a slash, id will be appended by application). |

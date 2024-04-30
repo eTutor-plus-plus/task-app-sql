@@ -43,3 +43,8 @@ jdbc:
   executor:
     username: etutor_sql_executor
     password: etutor_sql_executor_pwd
+  max-pool-size: 5
+  max-lifetime: 1800000 # 30 minutes
+  connection-timeout: 15000 # 15 seconds
+
+sql-url: http://localhost:8080/api/forwardPublic/sql/query/

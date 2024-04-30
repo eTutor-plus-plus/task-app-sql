@@ -7,7 +7,7 @@ import org.testcontainers.utility.DockerImageName;
 /**
  * A PostgreSQL container for use in unit tests.
  */
-class AppPostgresContainer extends PostgreSQLContainer<AppPostgresContainer> {
+public class AppPostgresContainer extends PostgreSQLContainer<AppPostgresContainer> {
     /**
      * The docker image version of the test database container.
      */
