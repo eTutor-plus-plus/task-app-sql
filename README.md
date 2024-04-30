@@ -33,6 +33,14 @@ docker run -p 8090:8081 \
   -e CLIENTS_API_KEYS_2_KEY=key-for-reading-submissions \
   -e CLIENTS_API_KEYS_2_ROLES_0=READ_SUBMISSION \
   -e SQL_URL=https://etutor.dke.uni-linz.ac.at/api/forwardPublic/sql/query/ \
+  -e JDBC_URL="jdbc:postgresql://postgres:5432/etutor_sql_exercises" \
+  -e JDBC_ADMIN_USERNAME=etutor_sql_admin \
+  -e JDBC_ADMIN_PASSWORD=secret \
+  -e JDBC_EXECUTOR_USERNAME=etutor_sql_executor \
+  -e JDBC_EXECUTOR_PASSWORD=secret \
+  -e JDBC_MAX_POOL_SIZE=10 \
+  -e JDBC_MAX_LIFETIME=1800000 \
+  -e JDBC_CONNECTION_TIMEOUT=15000 \
   etutorplusplus/task-app-sql
 ```
 
@@ -65,6 +73,13 @@ services:
             CLIENTS_API_KEYS_2_KEY: key-for-reading-submissions
             CLIENTS_API_KEYS_2_ROLES_0: READ_SUBMISSION
             SQL_URL: https://etutor.dke.uni-linz.ac.at/api/forwardPublic/sql/query/
+            JDBC_ADMIN_USERNAME: etutor_sql_admin
+            JDBC_ADMIN_PASSWORD: secret
+            JDBC_EXECUTOR_USERNAME: etutor_sql_executor
+            JDBC_EXECUTOR_PASSWORD: secret
+            JDBC_MAX_POOL_SIZE: 10
+            JDBC_MAX_LIFETIME: 1800000
+            JDBC_CONNECTION_TIMEOUT: 15000
 ```
 
 ### Environment Variables
