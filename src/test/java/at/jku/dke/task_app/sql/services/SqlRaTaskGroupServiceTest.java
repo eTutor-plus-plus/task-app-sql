@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -124,7 +125,8 @@ class SqlRaTaskGroupServiceTest {
     void mapToReturnData() {
         // Arrange
         MessageSource ms = mock(MessageSource.class);
-        SqlRaTaskGroupService service = new TestService(null, null, null, null, null);
+        when(ms.getMessage(anyString(), any(Object[].class), any(Locale.class))).thenReturn("test");
+        SqlRaTaskGroupService service = new TestService(null, null, ms, null, null);
         var taskGroup = new SqlRaTaskGroup();
         taskGroup.setSchemaDescription(new SchemaInfoDto(List.of(
             new TableDto("test1", List.of(), List.of(), null)
