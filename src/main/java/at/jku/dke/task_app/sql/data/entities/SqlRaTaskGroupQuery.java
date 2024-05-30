@@ -80,7 +80,7 @@ public class SqlRaTaskGroupQuery {
      *
      * @return The task group.
      */
-    public TaskGroup getTaskGroup() {
+    public SqlRaTaskGroup getTaskGroup() {
         return taskGroup;
     }
 
