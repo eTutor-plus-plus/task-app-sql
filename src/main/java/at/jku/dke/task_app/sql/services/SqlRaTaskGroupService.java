@@ -11,9 +11,11 @@ import at.jku.dke.task_app.sql.data.repositories.SqlRaTaskGroupRepository;
 import at.jku.dke.task_app.sql.dto.ModifySqlTaskGroupDto;
 import at.jku.dke.task_app.sql.dto.SchemaInfoDto;
 import at.jku.dke.task_app.sql.dto.TableDto;
+import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -114,6 +116,13 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
     //#endregion
 
     //#region --- UPDATE ---
+
+    @Override
+    @CacheEvict(value = "queryResult", allEntries = true)
+    public TaskGroupModificationResponseDto update(long id, @Valid ModifyTaskGroupDto<ModifySqlTaskGroupDto> dto) {
+        return super.update(id, dto);
+    }
+
     @Override
     protected void updateTaskGroup(SqlRaTaskGroup taskGroup, ModifyTaskGroupDto<ModifySqlTaskGroupDto> modifyTaskGroupDto) {
         if (!modifyTaskGroupDto.taskGroupType().equals("sql"))

@@ -12,7 +12,7 @@
 
     <groupId>at.jku.dke.etutor</groupId>
     <artifactId>task-app-sql</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>eTutor Task-App: Sql</name>
     <description>eTutor Task-App for task type "sql" and "relalg"</description>
@@ -51,6 +51,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
         <!-- Database -->

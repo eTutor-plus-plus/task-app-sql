@@ -23,6 +23,14 @@ public interface SqlRaTaskGroupQueryRepository extends JpaRepository<SqlRaTaskGr
     List<SqlRaTaskGroupQuery> findByTaskGroup_Id(Long id);
 
     /**
+     * Finds a {@link SqlRaTaskGroupQuery} by its identifier with the task group eagerly loaded.
+     * @param id The query identifier.
+     * @return The {@link SqlRaTaskGroupQuery} if found.
+     */
+    @Query("SELECT t FROM SqlRaTaskGroupQuery t JOIN FETCH t.taskGroup WHERE t.id = ?1")
+    Optional<SqlRaTaskGroupQuery> findByIdWithTaskGroup(UUID id);
+
+    /**
      * Finds a {@link SqlRaTaskGroupQuery} by its table name and task group identifier.
      *
      * @param tableName The table name.
