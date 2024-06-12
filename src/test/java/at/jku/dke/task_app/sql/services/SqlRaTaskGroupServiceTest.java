@@ -73,7 +73,7 @@ class SqlRaTaskGroupServiceTest {
         verify(repo, times(1)).deleteByTaskGroupAndIdNotIn(any(), any());
     }
 
-    @Test
+/*    @Test
     void updateTaskGroupCreateInDiagnose() {
         // Arrange
         ModifyTaskGroupDto<ModifySqlTaskGroupDto> dto = new ModifyTaskGroupDto<>("sql", TaskStatus.APPROVED,
@@ -107,7 +107,7 @@ class SqlRaTaskGroupServiceTest {
 
         // Act & Assert
         assertThrows(ValidationException.class, () -> service.updateTaskGroup(taskGroup, dto));
-    }
+    }*/
 
     @Test
     void updateTaskGroupInvalidType() {

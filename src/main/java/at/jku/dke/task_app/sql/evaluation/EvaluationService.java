@@ -1,10 +1,12 @@
 package at.jku.dke.task_app.sql.evaluation;
 
 import at.jku.dke.etutor.task_app.dto.GradingDto;
+import at.jku.dke.etutor.task_app.dto.SubmissionMode;
 import at.jku.dke.etutor.task_app.dto.SubmitSubmissionDto;
 import at.jku.dke.task_app.sql.data.entities.TaskType;
 import at.jku.dke.task_app.sql.data.repositories.SqlRaTaskRepository;
 import at.jku.dke.task_app.sql.dto.SubmissionDto;
+import at.jku.dke.task_app.sql.evaluation.analyzer.QueryResult;
 import at.jku.dke.task_app.sql.evaluation.analyzer.SqlAnalysis;
 import at.jku.dke.task_app.sql.evaluation.analyzer.SqlAnalyzer;
 import at.jku.dke.task_app.sql.evaluation.analyzer.SqlAnalyzerConfig;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Locale;
 
 import static at.jku.dke.etutor.task_app.dto.SubmissionMode.SUBMIT;
@@ -50,7 +53,7 @@ public class EvaluationService {
     }
 
     /**
-     * Evaluates a input.
+     * Evaluates an input.
      *
      * @param submission The input to evaluate.
      * @return The evaluation result.
@@ -109,5 +112,28 @@ public class EvaluationService {
         var grading = new SqlGrading(task, analysis);
         var report = new SqlReport(this.messageSource, locale, submission.mode(), submission.feedbackLevel(), analysis, grading);
         return new GradingDto(task.getMaxPoints(), grading.getPoints(), report.getGeneralFeedback(), report.getCriteria());
+    }
+
+    /**
+     * Executes the query for the specified task.
+     *
+     * @param taskId The task identifier.
+     * @param mode   The submission mode (specifies which schema to use).
+     * @param query  The query to execute.
+     * @return The query result.
+     * @throws SQLException If executing the query failed.
+     */
+    @Transactional
+    public QueryResult execute(long taskId, SubmissionMode mode, String query) throws SQLException {
+        // find task and task group
+        var task = this.taskRepository.findById(taskId).orElseThrow(() -> new EntityNotFoundException("Task " + taskId + " does not exist."));
+        var taskGroup = task.getTaskGroup();
+
+        // prepare
+        LOG.info("Executing query for task {} with mode {}", taskId, mode);
+        var schema = taskGroup.getSchemaName() + (mode.equals(SUBMIT) ? SqlSchemaService.SUFFIX_SUBMISSION : SqlSchemaService.SUFFIX_DIAGNOSE);
+
+        // Execute
+        return this.analyzer.executeQuery(schema, query);
     }
 }
