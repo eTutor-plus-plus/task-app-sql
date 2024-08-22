@@ -52,7 +52,7 @@ class SqlBuilderTest {
             FROM (
               SELECT EMP_NO, EMP_NAME, DEPT_NO
               FROM EMP
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 
     @Test
@@ -93,7 +93,7 @@ class SqlBuilderTest {
                 FROM EMP
               ) AS selectionSubquery
               WHERE dept_no = 10 AND emp_no >= 30
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 
     @Test
@@ -118,7 +118,7 @@ class SqlBuilderTest {
                 SELECT EMP_NO, EMP_NAME, DEPT_NO
                 FROM EMP
               ) AS projectionSubquery
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 
     @Test
@@ -143,7 +143,7 @@ class SqlBuilderTest {
                 SELECT EMP_NO, EMP_NAME, DEPT_NO
                 FROM EMP
               ) AS renamingSubquery
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 
     @Test
@@ -190,7 +190,7 @@ class SqlBuilderTest {
                   WHERE dept_no = 10
                 ) AS projectionSubquery
               ) AS renamingSubquery
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 
     @Test
@@ -221,7 +221,7 @@ class SqlBuilderTest {
                 SELECT DEPT_NO, DEPT_NAME
                 FROM DEPT
               ) AS joinRightSideSubquery
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 
     @Test
@@ -252,7 +252,7 @@ class SqlBuilderTest {
                 SELECT DEPT_NO, DEPT_NAME
                 FROM DEPT
               ) AS joinRightSideSubquery
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 
     @Test
@@ -283,7 +283,7 @@ class SqlBuilderTest {
                 SELECT DEPT_NO, DEPT_NAME
                 FROM DEPT
               ) AS joinRightSideSubquery
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 
     @Test
@@ -314,7 +314,7 @@ class SqlBuilderTest {
                 SELECT DEPT_NO, DEPT_NAME
                 FROM DEPT
               )
-            ) AS subquery""", result); // I know this query won't work. But this is irrelevant here.
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim()); // I know this query won't work. But this is irrelevant here.
     }
 
     @Test
@@ -350,7 +350,7 @@ class SqlBuilderTest {
                 SELECT DEPT_NO, DEPT_NAME
                 FROM DEPT
               ) AS havingSubquery)
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 
     @Test
@@ -381,7 +381,7 @@ class SqlBuilderTest {
                 SELECT DEPT_NO, DEPT_NAME
                 FROM DEPT
               ) AS naFullJoinRightSideSubquery
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 
     @Test
@@ -412,7 +412,7 @@ class SqlBuilderTest {
                 SELECT DEPT_NO, DEPT_NAME
                 FROM DEPT
               ) AS naFullOuterRightSideSubQu
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 
     @Test
@@ -443,7 +443,7 @@ class SqlBuilderTest {
                 SELECT DEPT_NO, DEPT_NAME
                 FROM DEPT
               )
-            ) AS subquery""", result); // I know this query won't work. But this is irrelevant here.
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim()); // I know this query won't work. But this is irrelevant here.
     }
 
     @Test
@@ -474,7 +474,7 @@ class SqlBuilderTest {
                 SELECT DEPT_NO, DEPT_NAME
                 FROM DEPT
               )
-            ) AS subquery""", result); // I know this query won't work. But this is irrelevant here.
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim()); // I know this query won't work. But this is irrelevant here.
     }
 
     @Test
@@ -514,7 +514,7 @@ class SqlBuilderTest {
                 FROM DEPT
               ) AS rs
               WHERE ls.emp_no = rs.dept_no
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 
     @Test
@@ -569,6 +569,6 @@ class SqlBuilderTest {
                   FROM DEPT
                 ) AS projectionSubquery
               )
-            ) AS subquery""", result);
+            ) AS subquery""".replaceAll("\\s+", " ").trim(), result.replaceAll("\\s+", " ").trim());
     }
 }
