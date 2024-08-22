@@ -71,7 +71,7 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
     protected SqlRaTaskGroup createTaskGroup(long id, ModifyTaskGroupDto<ModifySqlTaskGroupDto> modifyTaskGroupDto) {
         if (!modifyTaskGroupDto.taskGroupType().equals("sql"))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid task group type.");
-        this.validateStatements(modifyTaskGroupDto);
+//        this.validateStatements(modifyTaskGroupDto);
 
         var taskGroup = new SqlRaTaskGroup();
         taskGroup.setId(id);
@@ -127,7 +127,7 @@ public class SqlRaTaskGroupService extends BaseTaskGroupService<SqlRaTaskGroup, 
     protected void updateTaskGroup(SqlRaTaskGroup taskGroup, ModifyTaskGroupDto<ModifySqlTaskGroupDto> modifyTaskGroupDto) {
         if (!modifyTaskGroupDto.taskGroupType().equals("sql"))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid task group type.");
-        this.validateStatements(modifyTaskGroupDto);
+//        this.validateStatements(modifyTaskGroupDto);
 
         var dbDidNotChange = modifyTaskGroupDto.additionalData().ddlStatements().equals(taskGroup.getDdlStatements()) &&
                              modifyTaskGroupDto.additionalData().diagnoseDmlStatements().equals(taskGroup.getDiagnoseDmlStatements()) &&

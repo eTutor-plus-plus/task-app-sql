@@ -114,6 +114,24 @@ public class SqlAnalyzer {
     }
 
     /**
+     * Executes the query and returns the result.
+     *
+     * @param schema The schema in which the query should be executed.
+     * @param query  The query.
+     * @return The query result.
+     * @throws SQLException If the query failed.
+     */
+    public QueryResult executeQuery(String schema, String query) throws SQLException {
+        LOG.info("Executing query {} in schema {}", query, schema);
+        try (Connection conn = this.dataSource.connect(schema)) {
+            return this.executeQuery(conn, query);
+        } catch (SQLException ex) {
+            LOG.error("Failed to connect to database", ex);
+            throw ex;
+        }
+    }
+
+    /**
      * Executes the specified query to analyze the syntax and retrieve the query columns.
      *
      * @param conn  The database connection.

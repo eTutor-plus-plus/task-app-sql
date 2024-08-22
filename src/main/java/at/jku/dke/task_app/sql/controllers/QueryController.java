@@ -81,7 +81,7 @@ public class QueryController {
 
                 // Table head
                 builder.append("<thead>").append("<tr>");
-                for (int i = 1; i < rsmd.getColumnCount(); i++) {
+                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     builder.append("<th>").append(rsmd.getColumnName(i)).append("</th>");
                 }
                 builder.append("</tr>").append("</thead>");
@@ -90,7 +90,7 @@ public class QueryController {
                 builder.append("<tbody>");
                 while (rs.next()) {
                     builder.append("<tr>");
-                    for (int i = 1; i < rsmd.getColumnCount(); i++) {
+                    for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                         builder.append("<td>").append(rs.getString(i)).append("</td>");
                     }
                     builder.append("</tr>");
