@@ -90,6 +90,13 @@ public class EvaluationService {
                 var report = new SqlReport(this.messageSource, locale, submission.mode(), submission.feedbackLevel(), analysis, new SqlGrading(task, analysis));
                 return new GradingDto(task.getMaxPoints(), BigDecimal.ZERO, report.getGeneralFeedback(), report.getCriteria());
             }
+            catch (Exception ex) {
+                var analysis = new SqlAnalysis();
+                analysis.setAnalysisException(ex);
+                var report = new SqlReport(this.messageSource, locale, submission.mode(), submission.feedbackLevel(), analysis, new SqlGrading(task, analysis));
+                return new GradingDto(task.getMaxPoints(), BigDecimal.ZERO, report.getGeneralFeedback(), report.getCriteria());
+            }
+
             switch (submission.mode()) {
                 case RUN:
                     config.addCriterion(SqlEvaluationCriterion.CORRECT_SYNTAX);
