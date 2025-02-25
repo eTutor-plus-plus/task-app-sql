@@ -217,7 +217,7 @@ comparisonOperator returns [ComparisonOperator value]
 
 // LITERALS
 literal returns [String value]
-    : 'APOSTROPHE' STRING {$value = $STRING.text;} (STRING {$value = $value + " " + $STRING.text;})* 'APOSTROPHE';
+    : 'APOSTROPHE' STRING {$value = $STRING.text;} (STRING {$value = $value + " " + $STRING.text;}|NUMBER {$value = $value + " " + $NUMBER.text;})* 'APOSTROPHE';
 
 date returns [String value]
     @init {

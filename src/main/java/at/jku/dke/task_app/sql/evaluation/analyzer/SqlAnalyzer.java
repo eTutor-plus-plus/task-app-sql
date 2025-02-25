@@ -55,9 +55,13 @@ public class SqlAnalyzer {
             analysis.setAnalysisException(new ValidationException("Query contains prohibited keywords"));
             return analysis;
         }
+
+
         submission = submission.trim();
-        if (submission.endsWith(";"))
+        while (submission.endsWith(";")){
             submission = submission.substring(0, submission.length() - 1);
+            submission = submission.trim();
+        }
 
         // Analyze other criteria from strongest to weakest and abort as soon a criterion is not satisfied
         LOG.info("Analyzing submission {}", submission);
@@ -195,7 +199,7 @@ public class SqlAnalyzer {
             return analysis;
         }
 
-        // Execute solution
+        // Execute submission
         int submissionCount = -1;
         var querySubmission = "SELECT COUNT(*) FROM (" + submission + ") AS submissionQuery";
         LOG.debug("Executing submission query {} for cartesian product checking", querySubmission);

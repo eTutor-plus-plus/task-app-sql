@@ -1,4 +1,4 @@
-// Generated from /Users/martin/Development/dke/etutor_neu/task-app-sql/src/main/antlr4/RelationalAlgebraSyntax.g4 by ANTLR 4.13.1
+// Generated from C:/Users/dke/Documents/GitHub/task-app-sql/src/main/antlr4/RelationalAlgebraSyntax.g4 by ANTLR 4.13.2
 
     package at.jku.dke.task_app.sql.ra2sql.parser;
 
