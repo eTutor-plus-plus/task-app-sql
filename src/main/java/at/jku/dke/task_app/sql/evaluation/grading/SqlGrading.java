@@ -34,7 +34,7 @@ public class SqlGrading {
         this.task = task;
         this.analysis = analysis;
         this.isCorrect = analysis.getAnalysisException() == null &&
-                         analysis.getCriterionAnalysis().values().stream().allMatch(SqlCriterionAnalysis::isCriterionSatisfied);
+            analysis.getCriterionAnalysis().values().stream().allMatch(SqlCriterionAnalysis::isCriterionSatisfied);
         if (this.isCorrect) {
             this.points = task.getMaxPoints();
             this.details = List.of();

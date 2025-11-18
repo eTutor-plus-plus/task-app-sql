@@ -40,6 +40,7 @@ public abstract class UnaryOperatorImpl extends ExpressionImpl implements UnaryO
 
     @Override
     public String toString() {
+
         return this.expression.toString();
     }
 }

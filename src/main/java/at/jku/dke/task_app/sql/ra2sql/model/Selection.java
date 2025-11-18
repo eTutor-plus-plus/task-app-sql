@@ -30,6 +30,29 @@ public class Selection extends UnaryOperatorImpl {
         return false;
     }
 
+    @Override
+    public void calculateSchema(at.jku.dke.task_app.sql.dto.SchemaInfoDto schemaInfo) {
+        this.removeAllSchemaAttributes();
+        var attributes = new ArrayList<String>(this.getSchemaAttributes());
+        if (this.getExpression() != null) {
+            this.getExpression().calculateSchema(schemaInfo);
+            this.getExpression().getSchemaAttributes().forEach(attributes::add);
+        }
+
+        //remove the prefixes ls and rs from the attributes
+        for(var att : attributes) {
+            if(att.startsWith("LS.")) {
+                this.addSchemaAttribute(att.substring(3));
+            } else if(att.startsWith("RS.")) {
+                this.addSchemaAttribute(att.substring(3));
+            }
+            else
+            {
+                this.addSchemaAttribute(att);
+            }
+        }
+    }
+
     /**
      * Returns the comparisons of the selection.
      *

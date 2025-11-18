@@ -35,7 +35,7 @@ class SqlBuilder {
             throw new IllegalArgumentException("expression must not be null");
 
         expression.calculateSchema(this.schemaInfo);
-        return new IntendingStringBuilder("SELECT DISTINCT *").newLine()
+        return new IntendingStringBuilder("SELECT DISTINCT  *").newLine()
             .append("FROM (").indent().newLine()
             .append(this.generateSql(expression, 1)).outdent().newLine()
             .append(") AS subquery").toString();
@@ -75,7 +75,7 @@ class SqlBuilder {
      * @param relation The relation expression.
      */
     private void buildRelation(IntendingStringBuilder sb, Relation relation) {
-        sb.append("SELECT ").append(this.generateSelectColumns(relation))
+        sb.append("SELECT DISTINCT ").append(this.generateSelectColumns(relation))
             .newLine().append("FROM ").append(relation.getName());
     }
 
@@ -90,7 +90,7 @@ class SqlBuilder {
         String query = this.generateSql(expression.getExpression(), level + 1);
         switch (expression) {
             case Selection sel -> {
-                sb.append("SELECT ").append(this.generateSelectColumns(sel)).newLine()
+                sb.append("SELECT DISTINCT ").append(this.generateSelectColumns(sel)).newLine()
                     .append("FROM (").indent().newLine()
                     .append(query).outdent().newLine()
                     .append(") AS selectionSubquery").newLine()
@@ -105,7 +105,7 @@ class SqlBuilder {
                 }
             }
             case Projection proj -> {
-                sb.append("SELECT ").append(this.generateSelectColumns(proj)).newLine();
+                sb.append("SELECT DISTINCT ").append(this.generateSelectColumns(proj)).newLine();
                 if (query.contains(" ")) {
                     sb.append("FROM (").indent().newLine()
                         .append(query).outdent().newLine()
@@ -113,7 +113,7 @@ class SqlBuilder {
                 } else
                     sb.append("FROM ").append(query);
             }
-            case Renaming ren -> sb.append("SELECT ").append(this.generateSelectColumns(ren)).newLine()
+            case Renaming ren -> sb.append("SELECT DISTINCT ").append(this.generateSelectColumns(ren)).newLine()
                 .append("FROM (").indent().newLine()
                 .append(query).outdent().newLine()
                 .append(") AS renamingSubquery");
@@ -134,21 +134,21 @@ class SqlBuilder {
         String right = this.generateSql(expression.getRightExpression(), level + 1);
 
         if (expression instanceof Join || (expression instanceof LeftSemiJoin || expression instanceof RightSemiJoin)) {
-            sb.append("SELECT ").append(this.generateSelectColumns(expression)).newLine()
+            sb.append("SELECT DISTINCT ").append(this.generateSelectColumns(expression)).newLine()
                 .append("FROM (").indent().newLine()
                 .append(left).outdent().newLine()
                 .append(") AS joinLeftSideSubquery NATURAL JOIN (").indent().newLine()
                 .append(right).outdent().newLine()
                 .append(") AS joinRightSideSubquery");
         } else if (expression instanceof Minus) {
-            sb.append("SELECT ").append(this.generateSelectColumns(expression)).newLine()
+            sb.append("SELECT DISTINCT ").append(this.generateSelectColumns(expression)).newLine()
                 .append("FROM (").indent().newLine()
                 .append(left).outdent().newLine()
                 .append(") AS minusLeftSideSubquery EXCEPT (").indent().newLine()
                 .append(right).outdent().newLine()
                 .append(")");
         } else if (expression instanceof Division) {
-            sb.append("SELECT ").append(this.generateSelectColumns(expression)).newLine()
+            sb.append("SELECT DISTINCT ").append(this.generateSelectColumns(expression)).newLine()
                 .append("FROM (").indent().newLine()
                 .append(left).outdent().newLine()
                 .append(") AS naJoinLeftSideSubquery NATURAL JOIN (").indent().newLine()
@@ -159,35 +159,35 @@ class SqlBuilder {
                 .append(right).outdent().newLine()
                 .append(") AS havingSubquery)");
         } else if (expression instanceof OuterJoin) {
-            sb.append("SELECT ").append(this.generateSelectColumns(expression)).newLine()
+            sb.append("SELECT DISTINCT ").append(this.generateSelectColumns(expression)).newLine()
                 .append("FROM (").indent().newLine()
                 .append(left).outdent().newLine()
                 .append(") AS naFullJoinLeftSideSubquery NATURAL FULL OUTER JOIN (").indent().newLine()
                 .append(right).outdent().newLine()
                 .append(") AS naFullJoinRightSideSubquery");
         } else if (expression instanceof CartesianProduct) {
-            sb.append("SELECT ").append(this.generateSelectColumns(expression)).newLine()
+            sb.append("SELECT DISTINCT ").append(this.generateSelectColumns(expression)).newLine()
                 .append("FROM (").indent().newLine()
                 .append(left).outdent().newLine()
                 .append(") AS naFullOuterLeftSideSubQu NATURAL FULL OUTER JOIN (").indent().newLine()
                 .append(right).outdent().newLine()
                 .append(") AS naFullOuterRightSideSubQu");
         } else if (expression instanceof Intersection) {
-            sb.append("SELECT ").append(this.generateSelectColumns(expression)).newLine()
+            sb.append("SELECT DISTINCT ").append(this.generateSelectColumns(expression)).newLine()
                 .append("FROM (").indent().newLine()
                 .append(left).outdent().newLine()
                 .append(") AS intersectLeftSubQu INTERSECT (").indent().newLine()
                 .append(right).outdent().newLine()
                 .append(")");
         } else if (expression instanceof Union) {
-            sb.append("SELECT ").append(this.generateSelectColumns(expression)).newLine()
+            sb.append("SELECT DISTINCT ").append(this.generateSelectColumns(expression)).newLine()
                 .append("FROM (").indent().newLine()
                 .append(left).outdent().newLine()
                 .append(") AS unionLeftSubQu UNION (").indent().newLine()
                 .append(right).outdent().newLine()
                 .append(")");
         } else if (expression instanceof ThetaJoin tj) {
-            sb.append("SELECT ").append(this.generateSelectColumns(expression)).newLine()
+            sb.append("SELECT DISTINCT ").append(this.generateSelectColumns(expression)).newLine()
                 .append("FROM (").indent().newLine()
                 .append(left).outdent().newLine()
                 .append(") AS ls, (").indent().newLine()
