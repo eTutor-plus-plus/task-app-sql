@@ -19,7 +19,7 @@ public class SqlAnalyzer {
     private static final Logger LOG = LoggerFactory.getLogger(SqlAnalyzer.class);
     private static final String INTERNAL_ERROR = "This is an internal system error. ";
     private static final String CONTACT_ADMIN = "Please contact the system administrator. ";
-
+    private static final int MAX_TUPLE_ROWS = 10000;
     private final SqlDataSource dataSource;
 
     /**
@@ -44,6 +44,9 @@ public class SqlAnalyzer {
     public SqlAnalysis analyze(String submission, SqlAnalyzerConfig config) {
         var analysis = new SqlAnalysis();
 
+
+
+
         // Validate submission
         if (submission == null || submission.isBlank()) {
             LOG.warn("Submission is null or empty, this should not happen because submission should be validated in controller");
@@ -56,12 +59,14 @@ public class SqlAnalyzer {
             return analysis;
         }
 
+        //trim submission from ";" at the end, because otherwise it cannot be wrapped
+        submission = removeSemicolonAtEnd(submission);
 
-        submission = submission.trim();
-        while (submission.endsWith(";")){
-            submission = submission.substring(0, submission.length() - 1);
-            submission = submission.trim();
-        }
+        //LIMIT returned rows to 10000 to avoid performance issues and out of memory errors, if the submission produces a huge result set (e.g. due to cartesian product)
+        submission = wrapQueryWithLimit(submission, MAX_TUPLE_ROWS);
+
+
+
 
         // Analyze other criteria from strongest to weakest and abort as soon a criterion is not satisfied
         LOG.info("Analyzing submission {}", submission);
@@ -116,6 +121,9 @@ public class SqlAnalyzer {
 
         return analysis;
     }
+
+
+
 
     /**
      * Executes the query and returns the result.
@@ -470,5 +478,29 @@ public class SqlAnalyzer {
         return true;
     }
 
+    private String removeSemicolonAtEnd(String submission) {
+        submission = submission.trim();
+        while (submission.endsWith(";")){
+            submission = submission.substring(0, submission.length() - 1);
+            submission = submission.trim();
+        }
+        return submission;
+    }
+
+    private String wrapQueryWithLimit(String submission, int maxTupleRows) {
+        String trimmed = submission.trim();
+        if (containsTopLevelLimit(trimmed)) {
+            return trimmed;
+        }
+        return "SELECT * FROM (" + trimmed + ") AS limitedQuery LIMIT " + maxTupleRows;
+    }
+
+    private boolean containsTopLevelLimit(String query) {
+        String normalized = query.toLowerCase();
+        // einfache Checks: explicit " limit " token oder endsWith " limit <num>"
+        if (normalized.contains(" limit ")) return true;
+        if (normalized.matches("(?s).*\\blimit\\b\\s+\\d+\\s*$")) return true;
+        return false;
+    }
     //#endregion
 }
