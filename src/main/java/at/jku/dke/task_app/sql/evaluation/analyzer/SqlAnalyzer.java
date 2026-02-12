@@ -19,7 +19,7 @@ public class SqlAnalyzer {
     private static final Logger LOG = LoggerFactory.getLogger(SqlAnalyzer.class);
     private static final String INTERNAL_ERROR = "This is an internal system error. ";
     private static final String CONTACT_ADMIN = "Please contact the system administrator. ";
-    private static final int MAX_TUPLE_ROWS = 10000;
+    private static final int MAX_TUPLE_ROWS = 1000;
     private final SqlDataSource dataSource;
 
     /**
