@@ -123,7 +123,7 @@ public class SqlGrading {
                     task.getMaxPoints() :
                     task.getWrongOrderPenalty()));
             else
-                entries.add(new GradingEntry(entry.getKey(), task.getMaxPoints()));
+                entries.add(new GradingEntry(entry.getKey(), BigDecimal.ZERO));
         }
 
         return entries;
