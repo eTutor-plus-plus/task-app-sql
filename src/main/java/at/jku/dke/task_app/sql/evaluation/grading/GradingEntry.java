@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  */
 public record GradingEntry(SqlEvaluationCriterion criterion, BigDecimal minusPoints) {
     public GradingEntry {
-        if (minusPoints == null || !(minusPoints.compareTo(BigDecimal.ZERO) > 0 || minusPoints.compareTo(BigDecimal.ONE.negate()) == 0))
+        if (minusPoints == null || !(minusPoints.compareTo(BigDecimal.ZERO) >= 0 || minusPoints.compareTo(BigDecimal.ONE.negate()) == 0))
             throw new IllegalArgumentException("Minus points must not be less than -1.");
     }
 }
